@@ -1,4 +1,4 @@
-package com.template.android.androidtemplate;
+package com.android.template;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

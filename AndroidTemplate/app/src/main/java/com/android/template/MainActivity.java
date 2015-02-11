@@ -1,26 +1,30 @@
-package com.template.android.androidtemplate;
+package com.android.template;
 
-import android.app.Activity;
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.ActionBar;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.content.Context;
-import android.os.Build;
+import android.location.LocationManager;
 import android.os.Bundle;
-import android.view.Gravity;
-import android.view.LayoutInflater;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.support.v4.widget.DrawerLayout;
-import android.widget.ArrayAdapter;
-import android.widget.TextView;
+
+import com.android.template.androidtemplate.R;
+
+import java.util.Arrays;
+import java.util.List;
+
+import javax.inject.Inject;
+
+import dagger.ObjectGraph;
 
 
 public class MainActivity extends ActionBarActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
+    private ObjectGraph activityGraph;
+
+    @Inject
+    LocationManager locationManager;
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -35,6 +39,14 @@ public class MainActivity extends ActionBarActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Create the activity graph by .plus-ing our modules onto the application graph.
+        MyApplication application = (MyApplication) getApplication();
+        activityGraph = application.getApplicationGraph().plus(getModules().toArray());
+
+        // Inject ourselves so subclasses will have dependencies fulfilled when this method returns.
+        activityGraph.inject(this);
+
         setContentView(R.layout.activity_main);
 
         mNavigationDrawerFragment = (NavigationDrawerFragment)
@@ -52,7 +64,7 @@ public class MainActivity extends ActionBarActivity
         // update the main content by replacing fragments
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
-                .replace(R.id.container, PlaceholderFragment.newInstance(position + 1))
+                .replace(R.id.container, HomeFragment.newInstance(position + 1))
                 .commit();
     }
 
@@ -106,44 +118,26 @@ public class MainActivity extends ActionBarActivity
         return super.onOptionsItemSelected(item);
     }
 
-    /**
-     * A placeholder fragment containing a simple view.
-     */
-    public static class PlaceholderFragment extends Fragment {
-        /**
-         * The fragment argument representing the section number for this
-         * fragment.
-         */
-        private static final String ARG_SECTION_NUMBER = "section_number";
+    @Override
+    protected void onDestroy() {
+        // Eagerly clear the reference to the activity graph to allow it to be garbage collected as
+        // soon as possible.
+        activityGraph = null;
 
-        /**
-         * Returns a new instance of this fragment for the given section
-         * number.
-         */
-        public static PlaceholderFragment newInstance(int sectionNumber) {
-            PlaceholderFragment fragment = new PlaceholderFragment();
-            Bundle args = new Bundle();
-            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-            fragment.setArguments(args);
-            return fragment;
-        }
-
-        public PlaceholderFragment() {
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-            return rootView;
-        }
-
-        @Override
-        public void onAttach(Activity activity) {
-            super.onAttach(activity);
-            ((MainActivity) activity).onSectionAttached(
-                    getArguments().getInt(ARG_SECTION_NUMBER));
-        }
+        super.onDestroy();
     }
 
+    /**
+     * A list of modules to use for the individual activity graph. Subclasses can override this
+     * method to provide additional modules provided they call and include the modules returned by
+     * calling {@code super.getModules()}.
+     */
+    protected List<Object> getModules() {
+        return Arrays.<Object>asList(new ActivityModule(this));
+    }
+
+    /** Inject the supplied {@code object} using the activity-specific graph. */
+    public void inject(Object object) {
+        activityGraph.inject(object);
+    }
 }
