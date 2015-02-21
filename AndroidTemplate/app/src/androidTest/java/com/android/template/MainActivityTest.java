@@ -16,6 +16,8 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActiv
     @Override
     public void setUp() {
         solo = new Solo(getInstrumentation(), getActivity());
+
+        solo.scrollToSide(Solo.RIGHT);
     }
 
     @Override
@@ -24,16 +26,12 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActiv
     }
 
     public void testClickOnAction() {
-        solo.scrollToSide(Solo.LEFT);
-
         solo.clickOnView(solo.getView(R.id.action_example));
 
         solo.waitForText("Example action.");
     }
 
     public void testHasToolbar() {
-        MainActivity mainActivity = getActivity();
-
         Toolbar toolbar = (Toolbar) solo.getView(R.id.toolbar);
 
         assertNotNull(toolbar);
