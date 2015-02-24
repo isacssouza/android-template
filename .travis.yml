@@ -32,5 +32,8 @@ before_script:
 env:
   - TERM=dumb
 
+repo_token:
+    secure: B0yW8im1ZZTqVpHQKEie4Qe/+emDgGhmgFKZ9JzvadLr8yykx5JwtIZwd/YR5DlXvBD+3wzIyb2bJeHrexCD9SFeUV/cwEkP5593WuxZhrArTGFiKt6XJQLbFjNR2bl7YvQF/uwBqZSaRF1NXwLUNUPbNhiBgkmmnhXGhEdy1l4=
+
 script:
   - cd AndroidTemplate && ./gradlew clean test jacocoTestReport coveralls connectedAndroidTest
