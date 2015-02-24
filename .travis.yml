@@ -30,4 +30,4 @@ before_script:
   - adb shell input keyevent 82 &
 
 script:
-  - cd AndroidTemplate && ./gradlew clean test connectedAndroidTest
+  - cd AndroidTemplate && ./gradlew clean test jacocoTestReport coveralls connectedAndroidTest
