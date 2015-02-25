@@ -30,10 +30,10 @@ before_script:
   - adb shell input keyevent 82 &
 
 env:
-  - TERM=dumb
-
-repo_token:
-    secure: "CxuKWBlEoUFKjlpuGTvMvCTSQ8rbICBFvKZ4cf2v5xfBfzyqn6nJjRZGANlpncRCjz3pX4Gqz23om8uAPQUljH0eWp/bp1em7DGaACtPZJnwAy07clkU33hh+UtB7jowKUMG/DwBasZtJlQxtexdZep98clTupCWfdZZlXC99kk="
+    global:
+        secure: "U7s7mychiP778Juip2MlFZGi/Aa3t3ebHz9pweyOch4NtEYMT5QWbbWGKP0FtFwcYO3zj2tleHwdZc02Sd81UTUvhcL3osUd/e3hiaNCqjWm4GsFo2Yp6pw0gUY422NBiejZS9aVpfNIvqcyxCMh+XURIRDbtnNOO2MYDk9PtTo="
+    matrix:
+        - TERM=dumb
 
 script:
   - cd AndroidTemplate && ./gradlew clean test jacocoTestReport coveralls connectedAndroidTest
