@@ -36,4 +36,4 @@ env:
         - TERM=dumb
 
 script:
-  - cd AndroidTemplate && ./gradlew clean test jacocoTestReport coveralls connectedAndroidTest
+    - cd AndroidTemplate && ./gradlew --stacktrace clean test jacocoTestReport coveralls connectedAndroidTest
