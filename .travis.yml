@@ -35,6 +35,7 @@ env:
         secure: "U7s7mychiP778Juip2MlFZGi/Aa3t3ebHz9pweyOch4NtEYMT5QWbbWGKP0FtFwcYO3zj2tleHwdZc02Sd81UTUvhcL3osUd/e3hiaNCqjWm4GsFo2Yp6pw0gUY422NBiejZS9aVpfNIvqcyxCMh+XURIRDbtnNOO2MYDk9PtTo="
     matrix:
         - TERM=dumb
+        - CI_NAME=travis
 
 script:
     - cd AndroidTemplate && ./gradlew --stacktrace clean test jacocoTestReport coveralls connectedAndroidTest
