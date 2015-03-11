@@ -1,9 +1,14 @@
 package com.android.template;
 
 import android.content.Context;
+
+import com.android.template.network.MovieManager;
+import com.squareup.okhttp.OkHttpClient;
+
+import javax.inject.Singleton;
+
 import dagger.Module;
 import dagger.Provides;
-import javax.inject.Singleton;
 
 /**
  * This module represents objects which exist only for the scope of a single activity. We can
@@ -14,10 +19,10 @@ import javax.inject.Singleton;
         injects = {
                 MainActivity.class,
                 NavigationDrawerFragment.class,
-                HomeFragment.class
+                HomeFragment.class,
+                MovieManager.class
         },
-        addsTo = AndroidModule.class,
-        library = true
+        addsTo = AndroidModule.class
 )
 public class ActivityModule {
     private final MainActivity activity;
@@ -30,7 +35,19 @@ public class ActivityModule {
      * Allow the activity context to be injected but require that it be annotated with
      * {@link ForActivity @ForActivity} to explicitly differentiate it from application context.
      */
-    @Provides @Singleton @ForActivity Context provideActivityContext() {
-        return activity;
+//    @Provides @Singleton @ForActivity Context provideActivityContext() {
+//        return activity;
+//    }
+
+    @Provides
+    OkHttpClient provideOkHttpClient() {
+        return new OkHttpClient();
+    }
+
+    @Provides @Singleton
+    MovieManager provideMovieManager() {
+        MovieManager movieManager = new MovieManager("http://www.omdbapi.com/?s=");
+        activity.inject(movieManager);
+        return movieManager;
     }
 }

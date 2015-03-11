@@ -3,13 +3,30 @@ package com.android.template;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.android.template.androidtemplate.R;
+import com.android.template.model.Movie;
+import com.android.template.network.MovieManager;
 
-public class HomeFragment extends Fragment {
+import java.util.List;
+
+import javax.inject.Inject;
+
+import rx.Observer;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+
+public class HomeFragment extends Fragment implements Observer<List<Movie>> {
+    private static final String TAG = HomeFragment.class.getSimpleName();
+
+    @Inject
+    MovieManager movieManager;
+
     /**
      * The fragment argument representing the section number for this
      * fragment.
@@ -29,15 +46,17 @@ public class HomeFragment extends Fragment {
     }
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        ((MainActivity) getActivity()).inject(this);
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        ((MainActivity) getActivity()).inject(this);
+
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+
+        movieManager.getMoviesByTitle("The")
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(this);
+
         return rootView;
     }
 
@@ -46,5 +65,20 @@ public class HomeFragment extends Fragment {
         super.onAttach(activity);
         ((MainActivity) activity).onSectionAttached(
                 getArguments().getInt(ARG_SECTION_NUMBER));
+    }
+
+    @Override
+    public void onCompleted() {
+        Log.i(TAG, "Movie subscriber completed.");
+    }
+
+    @Override
+    public void onError(Throwable e) {
+        Log.e(TAG, "Movie subscriber error.", e);
+    }
+
+    @Override
+    public void onNext(List<Movie> movies) {
+        Log.i(TAG, "Movie subscriber next: " + movies);
     }
 }
