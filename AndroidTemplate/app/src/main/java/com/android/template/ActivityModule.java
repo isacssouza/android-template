@@ -1,7 +1,9 @@
 package com.android.template;
 
 import android.content.Context;
+import android.view.LayoutInflater;
 
+import com.android.template.adapter.MovieAdapter;
 import com.android.template.network.MovieManager;
 import com.squareup.okhttp.OkHttpClient;
 
@@ -20,7 +22,8 @@ import dagger.Provides;
                 MainActivity.class,
                 NavigationDrawerFragment.class,
                 HomeFragment.class,
-                MovieManager.class
+                MovieManager.class,
+                MovieAdapter.class
         },
         addsTo = AndroidModule.class
 )
@@ -31,11 +34,7 @@ public class ActivityModule {
         this.activity = activity;
     }
 
-    /**
-     * Allow the activity context to be injected but require that it be annotated with
-     * {@link ForActivity @ForActivity} to explicitly differentiate it from application context.
-     */
-//    @Provides @Singleton @ForActivity Context provideActivityContext() {
+//    @Provides @Singleton @ForActivity MainActivity provideMainActivity() {
 //        return activity;
 //    }
 
@@ -49,5 +48,10 @@ public class ActivityModule {
         MovieManager movieManager = new MovieManager("http://www.omdbapi.com/?s=");
         activity.inject(movieManager);
         return movieManager;
+    }
+
+    @Provides @Singleton
+    LayoutInflater provideLayoutInflater() {
+        return (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 }

@@ -3,14 +3,18 @@ package com.android.template;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.android.template.adapter.MovieAdapter;
 import com.android.template.androidtemplate.R;
 import com.android.template.model.Movie;
 import com.android.template.network.MovieManager;
+import com.android.template.util.DividerItemDecoration;
 
 import java.util.List;
 
@@ -26,6 +30,11 @@ public class HomeFragment extends Fragment implements Observer<List<Movie>> {
 
     @Inject
     MovieManager movieManager;
+
+    @Inject
+    MovieAdapter movieAdapter;
+
+    private RecyclerView movieList;
 
     /**
      * The fragment argument representing the section number for this
@@ -51,6 +60,10 @@ public class HomeFragment extends Fragment implements Observer<List<Movie>> {
         ((MainActivity) getActivity()).inject(this);
 
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+        movieList = (RecyclerView) rootView.findViewById(R.id.movie_list);
+        movieList.setLayoutManager(new LinearLayoutManager(getActivity()));
+        movieList.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST));
+        movieList.setAdapter(movieAdapter);
 
         movieManager.getMoviesByTitle("The")
                 .subscribeOn(Schedulers.newThread())
@@ -80,5 +93,6 @@ public class HomeFragment extends Fragment implements Observer<List<Movie>> {
     @Override
     public void onNext(List<Movie> movies) {
         Log.i(TAG, "Movie subscriber next: " + movies);
+        movieAdapter.swapMovies(movies);
     }
 }
