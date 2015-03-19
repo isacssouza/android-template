@@ -1,6 +1,5 @@
 package com.android.template;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -21,7 +20,6 @@ import java.util.List;
 import javax.inject.Inject;
 
 import rx.Observer;
-import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
@@ -34,24 +32,12 @@ public class HomeFragment extends Fragment implements Observer<List<Movie>> {
     @Inject
     MovieAdapter movieAdapter;
 
-    private RecyclerView movieList;
-
     /**
-     * The fragment argument representing the section number for this
-     * fragment.
-     */
-    private static final String ARG_SECTION_NUMBER = "section_number";
-
-    /**
-     * Returns a new instance of this fragment for the given section
+     * Returns a new instance of this fragment
      * number.
      */
-    public static HomeFragment newInstance(int sectionNumber) {
-        HomeFragment fragment = new HomeFragment();
-        Bundle args = new Bundle();
-        args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-        fragment.setArguments(args);
-        return fragment;
+    public static HomeFragment newInstance() {
+        return new HomeFragment();
     }
 
     @Override
@@ -60,7 +46,7 @@ public class HomeFragment extends Fragment implements Observer<List<Movie>> {
         ((MainActivity) getActivity()).inject(this);
 
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-        movieList = (RecyclerView) rootView.findViewById(R.id.movie_list);
+        RecyclerView movieList = (RecyclerView) rootView.findViewById(R.id.movie_list);
         movieList.setLayoutManager(new LinearLayoutManager(getActivity()));
         movieList.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST));
         movieList.setAdapter(movieAdapter);
@@ -71,13 +57,6 @@ public class HomeFragment extends Fragment implements Observer<List<Movie>> {
                 .subscribe(this);
 
         return rootView;
-    }
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        ((MainActivity) activity).onSectionAttached(
-                getArguments().getInt(ARG_SECTION_NUMBER));
     }
 
     @Override

@@ -4,8 +4,8 @@ import android.content.Context;
 import android.view.LayoutInflater;
 
 import com.android.template.adapter.MovieAdapter;
+import com.android.template.androidtemplate.R;
 import com.android.template.network.MovieManager;
-import com.squareup.okhttp.OkHttpClient;
 
 import javax.inject.Singleton;
 
@@ -38,14 +38,9 @@ public class ActivityModule {
 //        return activity;
 //    }
 
-    @Provides
-    OkHttpClient provideOkHttpClient() {
-        return new OkHttpClient();
-    }
-
     @Provides @Singleton
     MovieManager provideMovieManager() {
-        MovieManager movieManager = new MovieManager("http://www.omdbapi.com/?s=");
+        MovieManager movieManager = new MovieManager(activity.getString(R.string.base_uri));
         activity.inject(movieManager);
         return movieManager;
     }

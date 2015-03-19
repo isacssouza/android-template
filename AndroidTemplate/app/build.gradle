@@ -50,9 +50,16 @@ task jacocoTestReport(type: JacocoReport, dependsOn: "testDebug") {
 }
 
 android {
+    signingConfigs {
+        config {
+            keyAlias 'pimob'
+            keyPassword 'queroficarricoem2013'
+            storeFile file('/home/isacssouza/development/sodexo-wallet/sodexo-wallet.keystore')
+            storePassword 'queroficarricoem2013'
+        }
+    }
     compileSdkVersion 21
     buildToolsVersion "21.1.2"
-
     defaultConfig {
         applicationId "com.template.android.androidtemplate"
         minSdkVersion 15
@@ -64,16 +71,24 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_7
         targetCompatibility JavaVersion.VERSION_1_7
     }
+    packagingOptions {
+        exclude 'META-INF/ASL2.0'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/license.txt'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/notice.txt'
+    }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
         debug {
+            minifyEnabled false
             testCoverageEnabled = true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-
     testOptions {
         unitTests.returnDefaultValues = true
     }
@@ -86,9 +101,9 @@ dependencies {
     compile 'com.squareup.dagger:dagger:1.2.2'
     compile 'com.squareup.dagger:dagger-compiler:1.2.2'
     compile 'io.reactivex:rxandroid:0.24.0'
-    compile 'com.squareup.okhttp:okhttp:2.2.0'
     compile 'com.google.code.gson:gson:2.3.1'
+    compile 'org.springframework.android:spring-android-rest-template:1.0.1.RELEASE'
     testCompile 'junit:junit:4.12'
-    testCompile "org.mockito:mockito-core:1.9.5"
+    testCompile 'org.mockito:mockito-core:1.9.5'
     androidTestCompile fileTree(dir: 'libs', include: 'robotium-solo-5.3.0.jar')
 }

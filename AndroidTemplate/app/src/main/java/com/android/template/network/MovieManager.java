@@ -2,18 +2,15 @@ package com.android.template.network;
 
 import android.util.Log;
 
-import com.android.template.MainActivity;
 import com.android.template.model.Movie;
 import com.android.template.model.Search;
-import com.google.gson.Gson;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
 
-import java.io.IOException;
+import org.springframework.http.MediaType;
+import org.springframework.http.converter.json.GsonHttpMessageConverter;
+import org.springframework.web.client.RestTemplate;
+
+import java.util.Collections;
 import java.util.List;
-
-import javax.inject.Inject;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -26,9 +23,6 @@ import rx.Subscriber;
 public class MovieManager {
     private static final String TAG = MovieManager.class.getSimpleName();
 
-    @Inject
-    OkHttpClient mHttpClient;
-
     private String mBaseURL;
 
     public MovieManager(String baseURL) {
@@ -39,17 +33,15 @@ public class MovieManager {
         return Observable.create(new Observable.OnSubscribe<List<Movie>>() {
             @Override
             public void call(Subscriber<? super List<Movie>> subscriber) {
-                Request request = new Request.Builder()
-                        .url(mBaseURL + title)
-                        .build();
+                RestTemplate restTemplate = new RestTemplate();
+                GsonHttpMessageConverter messageConverter = new GsonHttpMessageConverter();
+                messageConverter.setSupportedMediaTypes(Collections.singletonList(new MediaType("text", "html")));
+                restTemplate.getMessageConverters().add(messageConverter);
 
-                Response response = null;
                 try {
-                    response = mHttpClient.newCall(request).execute();
-                    Gson gson = new Gson();
-                    Search search = gson.fromJson(response.body().string(), Search.class);
+                    Search search = restTemplate.getForObject(mBaseURL + "{title}", Search.class, title);
                     subscriber.onNext(search.getSearch());
-                } catch (IOException e) {
+                } catch (Exception e) {
                     Log.e(TAG, "Failed to get movies.", e);
                     subscriber.onError(e);
                 }
