@@ -11,11 +11,9 @@ import android.view.ViewGroup;
 
 import com.android.template.adapter.MovieAdapter;
 import com.android.template.androidtemplate.R;
-import com.android.template.model.Movie;
+import com.android.template.model.Search;
 import com.android.template.network.MovieManager;
 import com.android.template.util.DividerItemDecoration;
-
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -24,7 +22,7 @@ import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class HomeFragment extends Fragment implements Observer<List<Movie>> {
+public class HomeFragment extends Fragment implements Observer<Search> {
     private static final String TAG = HomeFragment.class.getSimpleName();
 
     @Inject
@@ -71,8 +69,8 @@ public class HomeFragment extends Fragment implements Observer<List<Movie>> {
     }
 
     @Override
-    public void onNext(List<Movie> movies) {
-        Log.i(TAG, "Movie subscriber next: " + movies);
-        movieAdapter.swapMovies(movies);
+    public void onNext(Search search) {
+        Log.i(TAG, "Movie subscriber next: " + search);
+        movieAdapter.swapMovies(search.getSearch());
     }
 }

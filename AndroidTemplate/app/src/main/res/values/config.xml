@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="base_uri">"http://www.omdbapi.com/?s="</string>
+    <string name="base_uri">"http://www.omdbapi.com"</string>
 </resources>

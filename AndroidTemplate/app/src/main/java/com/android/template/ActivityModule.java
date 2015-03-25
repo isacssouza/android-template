@@ -11,6 +11,7 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import retrofit.RestAdapter;
 
 /**
  * This module represents objects which exist only for the scope of a single activity. We can
@@ -36,9 +37,11 @@ public class ActivityModule {
 
     @Provides @Singleton
     MovieManager provideMovieManager() {
-        MovieManager movieManager = new MovieManager(activity.getString(R.string.base_uri));
-        activity.inject(movieManager);
-        return movieManager;
+        RestAdapter restAdapter = new RestAdapter.Builder()
+                .setEndpoint(activity.getString(R.string.base_uri))
+                .build();
+
+        return restAdapter.create(MovieManager.class);
     }
 
     @Provides @Singleton
