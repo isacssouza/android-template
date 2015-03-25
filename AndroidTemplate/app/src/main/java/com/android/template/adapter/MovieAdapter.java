@@ -15,6 +15,9 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+
 /**
  * Created by isacssouza on 3/10/15.
  */
@@ -27,14 +30,13 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
     private List<Movie> movies = new ArrayList<>();
 
     class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView title;
-        public TextView year;
+        @InjectView(R.id.movie_list_item_title) public TextView title;
+        @InjectView(R.id.movie_list_item_year) public TextView year;
 
         public ViewHolder(View itemView) {
             super(itemView);
 
-            title = (TextView) itemView.findViewById(R.id.movie_list_item_title);
-            year = (TextView) itemView.findViewById(R.id.movie_list_item_year);
+            ButterKnife.inject(this, itemView);
         }
     }
 

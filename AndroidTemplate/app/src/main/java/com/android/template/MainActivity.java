@@ -17,6 +17,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import dagger.ObjectGraph;
 
 
@@ -24,8 +26,7 @@ public class MainActivity extends ActionBarActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
     private ObjectGraph activityGraph;
 
-    @Inject
-    LocationManager locationManager;
+    @Inject LocationManager locationManager;
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -37,7 +38,8 @@ public class MainActivity extends ActionBarActivity
      */
     private CharSequence mTitle;
 
-    private Toolbar toolbar;
+    @InjectView(R.id.toolbar) Toolbar mToolbar;
+    @InjectView(R.id.drawer_layout) DrawerLayout mDrawerLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,8 +54,9 @@ public class MainActivity extends ActionBarActivity
 
         setContentView(R.layout.activity_main);
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        ButterKnife.inject(this);
+
+        setSupportActionBar(mToolbar);
 
         mNavigationDrawerFragment = new NavigationDrawerFragment();
         getSupportFragmentManager().beginTransaction()
@@ -69,8 +72,8 @@ public class MainActivity extends ActionBarActivity
         // Set up the drawer.
         mNavigationDrawerFragment.setUp(
                 R.id.navigation_drawer,
-                (DrawerLayout) findViewById(R.id.drawer_layout),
-                toolbar);
+                mDrawerLayout,
+                mToolbar);
     }
 
     @Override
@@ -80,17 +83,15 @@ public class MainActivity extends ActionBarActivity
         fragmentManager.beginTransaction()
                 .replace(R.id.container, HomeFragment.newInstance())
                 .commit();
-    }
 
-    public void onSectionAttached(int number) {
-        switch (number) {
-            case 1:
+        switch (position) {
+            case 0:
                 mTitle = getString(R.string.title_section1);
                 break;
-            case 2:
+            case 1:
                 mTitle = getString(R.string.title_section2);
                 break;
-            case 3:
+            case 2:
                 mTitle = getString(R.string.title_section3);
                 break;
         }

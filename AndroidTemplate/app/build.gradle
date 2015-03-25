@@ -37,27 +37,13 @@ task jacocoTestReport(type: JacocoReport, dependsOn: "testDebug") {
     executionData = files('build/jacoco/testDebug.exec')
 
     reports {
-        html {
-            enabled true
-            destination "build/reports/jacoco/test"
-        }
-        xml {
-            enabled true
-            destination "build/reports/jacoco/test/jacocoTestReport.xml"
-        }
+        html.enabled true
+        xml.enabled true
     }
 
 }
 
 android {
-    signingConfigs {
-        config {
-            keyAlias 'pimob'
-            keyPassword 'queroficarricoem2013'
-            storeFile file('/home/isacssouza/development/sodexo-wallet/sodexo-wallet.keystore')
-            storePassword 'queroficarricoem2013'
-        }
-    }
     compileSdkVersion 21
     buildToolsVersion "21.1.2"
     defaultConfig {
@@ -77,6 +63,7 @@ android {
         exclude 'META-INF/license.txt'
         exclude 'META-INF/NOTICE'
         exclude 'META-INF/notice.txt'
+        exclude 'META-INF/services/javax.annotation.processing.Processor'
     }
     buildTypes {
         release {
@@ -103,6 +90,7 @@ dependencies {
     compile 'io.reactivex:rxandroid:0.24.0'
     compile 'com.google.code.gson:gson:2.3.1'
     compile 'org.springframework.android:spring-android-rest-template:1.0.1.RELEASE'
+    compile 'com.jakewharton:butterknife:6.1.0'
     testCompile 'junit:junit:4.12'
     testCompile 'org.mockito:mockito-core:1.9.5'
     androidTestCompile fileTree(dir: 'libs', include: 'robotium-solo-5.3.0.jar')

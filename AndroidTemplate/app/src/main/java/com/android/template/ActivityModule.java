@@ -34,10 +34,6 @@ public class ActivityModule {
         this.activity = activity;
     }
 
-//    @Provides @Singleton @ForActivity MainActivity provideMainActivity() {
-//        return activity;
-//    }
-
     @Provides @Singleton
     MovieManager provideMovieManager() {
         MovieManager movieManager = new MovieManager(activity.getString(R.string.base_uri));

@@ -19,6 +19,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import butterknife.ButterKnife;
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -46,7 +47,7 @@ public class HomeFragment extends Fragment implements Observer<List<Movie>> {
         ((MainActivity) getActivity()).inject(this);
 
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-        RecyclerView movieList = (RecyclerView) rootView.findViewById(R.id.movie_list);
+        RecyclerView movieList = ButterKnife.findById(rootView, R.id.movie_list);
         movieList.setLayoutManager(new LinearLayoutManager(getActivity()));
         movieList.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST));
         movieList.setAdapter(movieAdapter);
