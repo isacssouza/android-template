@@ -3,4 +3,5 @@
     <color name="main_color">#ffee2200</color>
     <color name="main_dark_color">#ffc60000</color>
     <color name="accent">#ffcc0066</color>
+    <color name="dark_text">#FF222222</color>
 </resources>

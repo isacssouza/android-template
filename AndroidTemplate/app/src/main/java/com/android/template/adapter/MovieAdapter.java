@@ -92,9 +92,12 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
     public void add(Movie movie) {
         Movie oldMovie = movieMap.put(movie.getImdbID(), movie);
         if (oldMovie != null) {
-            movies.remove(oldMovie);
+            int pos = movies.indexOf(oldMovie);
+            movies.set(pos, oldMovie);
+            notifyItemChanged(pos);
+        } else {
+            movies.add(movie);
+            notifyItemInserted(movies.size()-1);
         }
-        movies.add(movie);
-        notifyDataSetChanged();
     }
 }
