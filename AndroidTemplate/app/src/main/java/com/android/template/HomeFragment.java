@@ -1,6 +1,8 @@
 package com.android.template;
 
+import android.app.Activity;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -21,9 +23,12 @@ import javax.inject.Inject;
 import butterknife.ButterKnife;
 import rx.Observable;
 import rx.Observer;
+import rx.Subscription;
+import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
+import rx.subscriptions.Subscriptions;
 
 public class HomeFragment extends Fragment implements Observer<Movie>, SwipeRefreshLayout.OnRefreshListener {
     private static final String TAG = HomeFragment.class.getSimpleName();
@@ -34,7 +39,8 @@ public class HomeFragment extends Fragment implements Observer<Movie>, SwipeRefr
     @Inject
     MovieAdapter movieAdapter;
 
-    SwipeRefreshLayout swipeLayout;
+    private SwipeRefreshLayout swipeLayout;
+    private Subscription moviesSubscription = Subscriptions.empty();
 
     /**
      * Returns a new instance of this fragment
@@ -45,11 +51,24 @@ public class HomeFragment extends Fragment implements Observer<Movie>, SwipeRefr
     }
 
     @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+
+        ((MainActivity) activity).inject(this);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        ((MainActivity) getActivity()).inject(this);
-
         swipeLayout = (SwipeRefreshLayout) inflater.inflate(R.layout.fragment_main, container, false);
+
+        return swipeLayout;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
         RecyclerView movieList = ButterKnife.findById(swipeLayout, R.id.movie_list);
         movieList.setLayoutManager(new LinearLayoutManager(getActivity()));
         movieList.setAdapter(movieAdapter);
@@ -64,14 +83,13 @@ public class HomeFragment extends Fragment implements Observer<Movie>, SwipeRefr
             }
         });
         onRefresh();
-
-        return swipeLayout;
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
 
+        moviesSubscription.unsubscribe();
         ButterKnife.reset(this);
     }
 
@@ -95,7 +113,7 @@ public class HomeFragment extends Fragment implements Observer<Movie>, SwipeRefr
 
     @Override
     public void onRefresh() {
-        movieManager.searchByTitle("The")
+        moviesSubscription = AppObservable.bindFragment(this, movieManager.searchByTitle("The")
                 .concatMap(new Func1<Search, Observable<Movie>>() {
                     @Override
                     public Observable<Movie> call(Search search) {
@@ -109,7 +127,7 @@ public class HomeFragment extends Fragment implements Observer<Movie>, SwipeRefr
                     }
                 })
                 .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
+                .observeOn(AndroidSchedulers.mainThread()))
                 .subscribe(this);
     }
 }

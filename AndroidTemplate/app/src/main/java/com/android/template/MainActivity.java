@@ -43,14 +43,14 @@ public class MainActivity extends ActionBarActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
         // Create the activity graph by .plus-ing our modules onto the application graph.
         MyApplication application = (MyApplication) getApplication();
         activityGraph = application.getApplicationGraph().plus(getModules().toArray());
 
         // Inject ourselves so subclasses will have dependencies fulfilled when this method returns.
         activityGraph.inject(this);
+
+        super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
 
