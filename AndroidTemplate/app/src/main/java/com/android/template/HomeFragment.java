@@ -50,7 +50,6 @@ public class HomeFragment extends Fragment implements Observer<Movie> {
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
         RecyclerView movieList = ButterKnife.findById(rootView, R.id.movie_list);
         movieList.setLayoutManager(new LinearLayoutManager(getActivity()));
-        movieList.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST));
         movieList.setAdapter(movieAdapter);
 
         movieManager.searchByTitle("The")

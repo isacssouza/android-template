@@ -27,6 +27,7 @@ import butterknife.InjectView;
  */
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> {
 
+    private static final String OTHER_SEPARATOR = "  |  ";
     @Inject
     LayoutInflater mLayoutInflater;
 
@@ -38,6 +39,9 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
         @InjectView(R.id.movie_list_item_title) public TextView title;
         @InjectView(R.id.movie_list_item_year) public TextView year;
         @InjectView(R.id.movie_list_item_poster) public ImageView poster;
+        @InjectView(R.id.movie_list_item_other) public TextView other;
+        @InjectView(R.id.movie_list_item_rating) public TextView rating;
+        @InjectView(R.id.movie_list_item_plot) public TextView plot;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -62,13 +66,22 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
     public void onBindViewHolder(ViewHolder holder, int position) {
         Movie movie = movies.get(position);
         holder.title.setText(movie.getTitle());
-        holder.year.setText(movie.getYear().toString());
+        holder.year.setText(movie.getYear());
+        holder.other.setText(buildOther(movie));
+        holder.rating.setText(movie.getImdbRating());
+        holder.plot.setText(movie.getPlot());
         Picasso.with(mMainActivity)
                 .load(movie.getPoster())
                 .placeholder(R.drawable.ic_theaters_black_48dp)
                 .error(R.drawable.ic_error_black_48dp)
-                .resize(0, holder.poster.getLayoutParams().height)
+                .resize(holder.poster.getLayoutParams().width, holder.poster.getLayoutParams().height)
                 .into(holder.poster);
+    }
+
+    private String buildOther(Movie movie) {
+        return movie.getRated() + OTHER_SEPARATOR +
+                movie.getRuntime() + OTHER_SEPARATOR +
+                movie.getGenre();
     }
 
     @Override
