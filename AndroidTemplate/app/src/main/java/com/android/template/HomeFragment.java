@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 
 import com.android.template.adapter.MovieAdapter;
 import com.android.template.androidtemplate.R;
+import com.android.template.model.Movie;
 import com.android.template.model.Search;
 import com.android.template.network.MovieManager;
 import com.android.template.util.DividerItemDecoration;
@@ -18,11 +19,13 @@ import com.android.template.util.DividerItemDecoration;
 import javax.inject.Inject;
 
 import butterknife.ButterKnife;
+import rx.Observable;
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
-public class HomeFragment extends Fragment implements Observer<Search> {
+public class HomeFragment extends Fragment implements Observer<Movie> {
     private static final String TAG = HomeFragment.class.getSimpleName();
 
     @Inject
@@ -50,7 +53,19 @@ public class HomeFragment extends Fragment implements Observer<Search> {
         movieList.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST));
         movieList.setAdapter(movieAdapter);
 
-        movieManager.getMoviesByTitle("The")
+        movieManager.searchByTitle("The")
+                .concatMap(new Func1<Search, Observable<Movie>>() {
+                    @Override
+                    public Observable<Movie> call(Search search) {
+                        return Observable.from(search.getSearch());
+                    }
+                })
+                .flatMap(new Func1<Movie, Observable<Movie>>() {
+                    @Override
+                    public Observable<Movie> call(Movie movie) {
+                        return movieManager.getById(movie.getImdbID());
+                    }
+                })
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this);
@@ -69,8 +84,8 @@ public class HomeFragment extends Fragment implements Observer<Search> {
     }
 
     @Override
-    public void onNext(Search search) {
-        Log.i(TAG, "Movie subscriber next: " + search);
-        movieAdapter.swapMovies(search.getSearch());
+    public void onNext(Movie movie) {
+        Log.i(TAG, "Movie subscriber next: " + movie);
+        movieAdapter.add(movie);
     }
 }

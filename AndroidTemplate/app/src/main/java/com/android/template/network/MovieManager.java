@@ -1,5 +1,6 @@
 package com.android.template.network;
 
+import com.android.template.model.Movie;
 import com.android.template.model.Search;
 
 import retrofit.http.GET;
@@ -13,5 +14,8 @@ import rx.Observable;
  */
 public interface MovieManager {
     @GET("/")
-    public Observable<Search> getMoviesByTitle(@Query("s") String title);
+    public Observable<Search> searchByTitle(@Query("s") String title);
+
+    @GET("/")
+    public Observable<Movie> getById(@Query("i") String id);
 }

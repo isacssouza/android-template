@@ -11,7 +11,10 @@ import com.android.template.androidtemplate.R;
 import com.android.template.model.Movie;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -27,6 +30,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
     LayoutInflater mLayoutInflater;
 
     private MainActivity mMainActivity;
+    private Map<String, Movie> movieMap = new HashMap<>();
     private List<Movie> movies = new ArrayList<>();
 
     class ViewHolder extends RecyclerView.ViewHolder {
@@ -64,9 +68,12 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
         return movies.size();
     }
 
-    public void swapMovies(List<Movie> newMovies) {
-        movies.clear();
-        movies.addAll(newMovies);
+    public void add(Movie movie) {
+        Movie oldMovie = movieMap.put(movie.getImdbID(), movie);
+        if (oldMovie != null) {
+            movies.remove(oldMovie);
+        }
+        movies.add(movie);
         notifyDataSetChanged();
     }
 }

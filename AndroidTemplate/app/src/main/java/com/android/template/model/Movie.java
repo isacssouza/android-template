@@ -13,6 +13,8 @@ public class Movie {
     @SerializedName("Year")
     private Integer year;
     private String imdbID;
+    @SerializedName("Poster")
+    private String poster;
 
     public String getTitle() {
         return title;
@@ -38,6 +40,14 @@ public class Movie {
         this.imdbID = mImdbID;
     }
 
+    public String getPoster() {
+        return poster;
+    }
+
+    public void setPoster(String poster) {
+        this.poster = poster;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -61,6 +71,7 @@ public class Movie {
         sb.append("title='").append(title).append('\'');
         sb.append(", year=").append(year);
         sb.append(", imdbID='").append(imdbID).append('\'');
+        sb.append(", poster='").append(poster).append('\'');
         sb.append('}');
         return sb.toString();
     }
