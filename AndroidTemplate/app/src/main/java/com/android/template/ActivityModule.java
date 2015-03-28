@@ -36,6 +36,11 @@ public class ActivityModule {
     }
 
     @Provides @Singleton
+    MainActivity provideMainActivity() {
+        return activity;
+    }
+
+    @Provides @Singleton
     MovieManager provideMovieManager() {
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setEndpoint(activity.getString(R.string.base_uri))

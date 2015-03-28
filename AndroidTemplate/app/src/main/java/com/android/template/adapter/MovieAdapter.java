@@ -4,14 +4,15 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.template.MainActivity;
 import com.android.template.androidtemplate.R;
 import com.android.template.model.Movie;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,6 +37,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
     class ViewHolder extends RecyclerView.ViewHolder {
         @InjectView(R.id.movie_list_item_title) public TextView title;
         @InjectView(R.id.movie_list_item_year) public TextView year;
+        @InjectView(R.id.movie_list_item_poster) public ImageView poster;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -61,6 +63,12 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
         Movie movie = movies.get(position);
         holder.title.setText(movie.getTitle());
         holder.year.setText(movie.getYear().toString());
+        Picasso.with(mMainActivity)
+                .load(movie.getPoster())
+                .placeholder(R.drawable.ic_theaters_black_48dp)
+                .error(R.drawable.ic_error_black_48dp)
+                .resize(0, holder.poster.getLayoutParams().height)
+                .into(holder.poster);
     }
 
     @Override
