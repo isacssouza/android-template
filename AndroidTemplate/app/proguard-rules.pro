@@ -66,3 +66,6 @@
 -keepclasseswithmembernames class * {
     @butterknife.* <methods>;
 }
+
+# retrofit
+-keep class retrofit.** { *; }
