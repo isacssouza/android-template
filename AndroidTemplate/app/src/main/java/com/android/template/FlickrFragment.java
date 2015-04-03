@@ -5,12 +5,16 @@ import android.graphics.Point;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -32,8 +36,12 @@ import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.Subscriptions;
 
+/**
+ * A fragment that shows flickr photos on a grid.
+ */
 public class FlickrFragment extends Fragment implements Observer<FlickrPhoto>, SwipeRefreshLayout.OnRefreshListener {
     private static final String TAG = FlickrFragment.class.getSimpleName();
+    private static final String KEY_SEARCH_TEXT = "KEY_SEARCH_TEXT";
 
     @Inject
     FlickrManager flickrManager;
@@ -42,7 +50,9 @@ public class FlickrFragment extends Fragment implements Observer<FlickrPhoto>, S
     FlickrAdapter flickrAdapter;
 
     private SwipeRefreshLayout swipeLayout;
-    private Subscription moviesSubscription = Subscriptions.empty();
+    private Subscription subscription = Subscriptions.empty();
+    private SearchView searchView;
+    private String searchText = "meerkat";
 
     /**
      * Returns a new instance of this fragment
@@ -71,6 +81,14 @@ public class FlickrFragment extends Fragment implements Observer<FlickrPhoto>, S
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        setHasOptionsMenu(true);
+
+        if (savedInstanceState != null) {
+            if (savedInstanceState.containsKey(KEY_SEARCH_TEXT)) {
+                searchText = savedInstanceState.getString(KEY_SEARCH_TEXT);
+            }
+        }
+
         RecyclerView photoList = ButterKnife.findById(swipeLayout, R.id.photo_list);
         StaggeredGridLayoutManager layoutManager = getLayoutForDisplay(getActivity().getWindowManager().getDefaultDisplay());
         photoList.setLayoutManager(layoutManager);
@@ -86,6 +104,39 @@ public class FlickrFragment extends Fragment implements Observer<FlickrPhoto>, S
                 swipeLayout.setRefreshing(true);
             }
         });
+        onRefresh();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.flickr_search_menu, menu);
+
+        searchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.search));
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                searchText = searchView.getQuery().toString();
+                doSearch();
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                return false;
+            }
+        });
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putString(KEY_SEARCH_TEXT, searchText);
+        super.onSaveInstanceState(outState);
+    }
+
+    private void doSearch() {
+        searchView.clearFocus();
+        flickrAdapter.clear();
+        swipeLayout.setRefreshing(true);
         onRefresh();
     }
 
@@ -108,7 +159,7 @@ public class FlickrFragment extends Fragment implements Observer<FlickrPhoto>, S
     public void onDestroyView() {
         super.onDestroyView();
 
-        moviesSubscription.unsubscribe();
+        subscription.unsubscribe();
         ButterKnife.reset(this);
     }
 
@@ -132,7 +183,7 @@ public class FlickrFragment extends Fragment implements Observer<FlickrPhoto>, S
 
     @Override
     public void onRefresh() {
-        moviesSubscription = AppObservable.bindFragment(this, flickrManager.search("meerkat")
+        subscription = AppObservable.bindFragment(this, flickrManager.search(searchText)
                 .concatMap(new Func1<FlickrSearch, Observable<FlickrPhoto>>() {
                     @Override
                     public Observable<FlickrPhoto> call(FlickrSearch search) {

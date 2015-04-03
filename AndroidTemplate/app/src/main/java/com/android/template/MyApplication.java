@@ -21,8 +21,6 @@ public class MyApplication extends Application {
         if (BuildConfig.DEBUG) {
             StrictMode.enableDefaults();
         }
-
-        Picasso.with(this).setIndicatorsEnabled(BuildConfig.DEBUG);
     }
 
     /**

@@ -2,6 +2,7 @@ package com.android.template;
 
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
@@ -25,6 +26,8 @@ import dagger.ObjectGraph;
 
 public class MainActivity extends ActionBarActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
+    private static final String KEY_TITLE = "KEY_TITLE";
+
     private ObjectGraph activityGraph;
 
     @Inject LocationManager locationManager;
@@ -65,6 +68,7 @@ public class MainActivity extends ActionBarActivity
                     .replace(R.id.navigation_drawer, mNavigationDrawerFragment)
                     .commit();
         } else {
+            setTitle(savedInstanceState.getCharSequence(KEY_TITLE));
             mNavigationDrawerFragment = (NavigationDrawerFragment) getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
         }
         mTitle = getTitle();
@@ -105,6 +109,12 @@ public class MainActivity extends ActionBarActivity
                 .replace(R.id.container, fragment)
                 .commit();
         setTitle(mTitle);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putCharSequence(KEY_TITLE, mTitle);
+        super.onSaveInstanceState(outState);
     }
 
     public void restoreActionBar() {

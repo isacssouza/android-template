@@ -87,4 +87,9 @@ public class FlickrAdapter extends RecyclerView.Adapter<FlickrAdapter.ViewHolder
         photos.add(photo);
         notifyItemInserted(photos.size()-1);
     }
+
+    public void clear() {
+        photos.clear();
+        notifyDataSetChanged();
+    }
 }
