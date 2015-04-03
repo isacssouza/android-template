@@ -5,6 +5,14 @@
 Libraries used on this project:
 
 - [Dagger](http://square.github.io/dagger/)
+- [RxAndroid](https://github.com/ReactiveX/RxAndroid)
+- [OkHttp](https://github.com/square/okhttp)
+- [Gson](https://code.google.com/p/google-gson/)
+- [Retrofit](https://github.com/square/retrofit)
+- [ButterKnife](https://github.com/JakeWharton/butterknife)
+- [Picasso](https://github.com/square/picasso)
 - [Robotium](https://code.google.com/p/robotium/)
 - [Mockito](https://github.com/mockito/mockito)
 - [JUnit](http://junit.org/)
+
+It also uses [Travis](https://travis-ci.org/) for CI and [Coveralls](https://coveralls.io) for coverage report.
