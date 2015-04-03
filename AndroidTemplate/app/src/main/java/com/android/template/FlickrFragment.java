@@ -6,21 +6,19 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.android.template.adapter.MovieAdapter;
+import com.android.template.adapter.FlickrAdapter;
 import com.android.template.androidtemplate.R;
-import com.android.template.model.Movie;
-import com.android.template.model.Search;
+import com.android.template.model.FlickrPhoto;
+import com.android.template.model.FlickrSearch;
 import com.android.template.network.FlickrManager;
-import com.android.template.network.MovieManager;
 
 import javax.inject.Inject;
 
@@ -34,14 +32,14 @@ import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.Subscriptions;
 
-public class HomeFragment extends Fragment implements Observer<Movie>, SwipeRefreshLayout.OnRefreshListener {
-    private static final String TAG = HomeFragment.class.getSimpleName();
+public class FlickrFragment extends Fragment implements Observer<FlickrPhoto>, SwipeRefreshLayout.OnRefreshListener {
+    private static final String TAG = FlickrFragment.class.getSimpleName();
 
     @Inject
-    MovieManager movieManager;
+    FlickrManager flickrManager;
 
     @Inject
-    MovieAdapter movieAdapter;
+    FlickrAdapter flickrAdapter;
 
     private SwipeRefreshLayout swipeLayout;
     private Subscription moviesSubscription = Subscriptions.empty();
@@ -50,8 +48,8 @@ public class HomeFragment extends Fragment implements Observer<Movie>, SwipeRefr
      * Returns a new instance of this fragment
      * number.
      */
-    public static HomeFragment newInstance() {
-        return new HomeFragment();
+    public static FlickrFragment newInstance() {
+        return new FlickrFragment();
     }
 
     @Override
@@ -64,7 +62,7 @@ public class HomeFragment extends Fragment implements Observer<Movie>, SwipeRefr
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        swipeLayout = (SwipeRefreshLayout) inflater.inflate(R.layout.fragment_main, container, false);
+        swipeLayout = (SwipeRefreshLayout) inflater.inflate(R.layout.fragment_flickr, container, false);
 
         return swipeLayout;
     }
@@ -73,10 +71,11 @@ public class HomeFragment extends Fragment implements Observer<Movie>, SwipeRefr
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        RecyclerView movieList = ButterKnife.findById(swipeLayout, R.id.movie_list);
-        RecyclerView.LayoutManager layoutManager = getLayoutForDisplay(getActivity().getWindowManager().getDefaultDisplay());
-        movieList.setLayoutManager(layoutManager);
-        movieList.setAdapter(movieAdapter);
+        RecyclerView photoList = ButterKnife.findById(swipeLayout, R.id.photo_list);
+        StaggeredGridLayoutManager layoutManager = getLayoutForDisplay(getActivity().getWindowManager().getDefaultDisplay());
+        photoList.setLayoutManager(layoutManager);
+        flickrAdapter.setSpanCount(layoutManager.getSpanCount());
+        photoList.setAdapter(flickrAdapter);
 
         swipeLayout.setOnRefreshListener(this);
         swipeLayout.setColorSchemeResources(R.color.main_color);
@@ -90,15 +89,19 @@ public class HomeFragment extends Fragment implements Observer<Movie>, SwipeRefr
         onRefresh();
     }
 
-    private RecyclerView.LayoutManager getLayoutForDisplay(Display display) {
+    private StaggeredGridLayoutManager getLayoutForDisplay(Display display) {
         Point size = new Point();
         display.getSize(size);
 
+        StaggeredGridLayoutManager layoutManager;
         if (size.x > 800) {
-            return new GridLayoutManager(getActivity(), 2);
+            layoutManager = new StaggeredGridLayoutManager(4, StaggeredGridLayoutManager.VERTICAL);
         } else {
-            return new LinearLayoutManager(getActivity());
+            layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         }
+        layoutManager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_NONE);
+
+        return layoutManager;
     }
 
     @Override
@@ -122,24 +125,18 @@ public class HomeFragment extends Fragment implements Observer<Movie>, SwipeRefr
     }
 
     @Override
-    public void onNext(Movie movie) {
-        Log.i(TAG, "Movie subscriber next: " + movie);
-        movieAdapter.add(movie);
+    public void onNext(FlickrPhoto photo) {
+        Log.i(TAG, "Flickr subscriber next: " + photo);
+        flickrAdapter.add(photo);
     }
 
     @Override
     public void onRefresh() {
-        moviesSubscription = AppObservable.bindFragment(this, movieManager.searchByTitle("The")
-                .concatMap(new Func1<Search, Observable<Movie>>() {
+        moviesSubscription = AppObservable.bindFragment(this, flickrManager.search("meerkat")
+                .concatMap(new Func1<FlickrSearch, Observable<FlickrPhoto>>() {
                     @Override
-                    public Observable<Movie> call(Search search) {
-                        return Observable.from(search.getSearch());
-                    }
-                })
-                .flatMap(new Func1<Movie, Observable<Movie>>() {
-                    @Override
-                    public Observable<Movie> call(Movie movie) {
-                        return movieManager.getById(movie.getImdbID());
+                    public Observable<FlickrPhoto> call(FlickrSearch search) {
+                        return Observable.from(search.getPhotos().getPhoto());
                     }
                 })
                 .subscribeOn(Schedulers.newThread())

@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 
 import com.android.template.adapter.MovieAdapter;
 import com.android.template.androidtemplate.R;
+import com.android.template.network.FlickrManager;
 import com.android.template.network.MovieManager;
 
 import javax.inject.Singleton;
@@ -23,6 +24,7 @@ import retrofit.RestAdapter;
                 MainActivity.class,
                 NavigationDrawerFragment.class,
                 HomeFragment.class,
+                FlickrFragment.class,
                 MovieManager.class,
                 MovieAdapter.class
         },
@@ -47,6 +49,16 @@ public class ActivityModule {
                 .build();
 
         return restAdapter.create(MovieManager.class);
+    }
+
+    @Provides @Singleton
+    FlickrManager provideFlickrManager() {
+        RestAdapter restAdapter = new RestAdapter.Builder()
+                .setLogLevel(RestAdapter.LogLevel.FULL)
+                .setEndpoint(activity.getString(R.string.flickr_base_uri))
+                .build();
+
+        return restAdapter.create(FlickrManager.class);
     }
 
     @Provides @Singleton

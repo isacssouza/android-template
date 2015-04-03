@@ -2,6 +2,7 @@ package com.android.template;
 
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -58,10 +59,14 @@ public class MainActivity extends ActionBarActivity
 
         setSupportActionBar(mToolbar);
 
-        mNavigationDrawerFragment = new NavigationDrawerFragment();
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.navigation_drawer, mNavigationDrawerFragment)
-                .commit();
+        if (savedInstanceState == null) {
+            mNavigationDrawerFragment = new NavigationDrawerFragment();
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.navigation_drawer, mNavigationDrawerFragment)
+                    .commit();
+        } else {
+            mNavigationDrawerFragment = (NavigationDrawerFragment) getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
+        }
         mTitle = getTitle();
     }
 
@@ -79,22 +84,27 @@ public class MainActivity extends ActionBarActivity
     @Override
     public void onNavigationDrawerItemSelected(int position) {
         // update the main content by replacing fragments
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction()
-                .replace(R.id.container, HomeFragment.newInstance())
-                .commit();
-
+        Fragment fragment = null;
         switch (position) {
             case 0:
                 mTitle = getString(R.string.title_section1);
+                fragment = HomeFragment.newInstance();
                 break;
             case 1:
                 mTitle = getString(R.string.title_section2);
+                fragment = FlickrFragment.newInstance();
                 break;
             case 2:
                 mTitle = getString(R.string.title_section3);
+                fragment = HomeFragment.newInstance();
                 break;
         }
+
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction()
+                .replace(R.id.container, fragment)
+                .commit();
+        setTitle(mTitle);
     }
 
     public void restoreActionBar() {
