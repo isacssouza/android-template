@@ -1,6 +1,11 @@
 package com.android.template;
 
 import android.app.Application;
+import android.os.StrictMode;
+
+import com.android.template.androidtemplate.BuildConfig;
+import com.squareup.picasso.Picasso;
+
 import dagger.ObjectGraph;
 import java.util.Arrays;
 import java.util.List;
@@ -12,6 +17,10 @@ public class MyApplication extends Application {
         super.onCreate();
 
         applicationGraph = ObjectGraph.create(getModules().toArray());
+
+        if (BuildConfig.DEBUG) {
+            StrictMode.enableDefaults();
+        }
     }
 
     /**

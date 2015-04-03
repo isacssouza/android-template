@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="base_uri">"http://www.omdbapi.com"</string>
+    <string name="flickr_base_uri">https://api.flickr.com/services/rest</string>
+    <string name="flickr_photo_uri_format">https://farm%1$d.staticflickr.com/%2$s/%3$s_%4$s.jpg</string>
+</resources>

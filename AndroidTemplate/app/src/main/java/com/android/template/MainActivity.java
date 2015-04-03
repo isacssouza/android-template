@@ -2,6 +2,8 @@ package com.android.template;
 
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.PersistableBundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -17,15 +19,18 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import dagger.ObjectGraph;
 
 
 public class MainActivity extends ActionBarActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
+    private static final String KEY_TITLE = "KEY_TITLE";
+
     private ObjectGraph activityGraph;
 
-    @Inject
-    LocationManager locationManager;
+    @Inject LocationManager locationManager;
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -37,12 +42,11 @@ public class MainActivity extends ActionBarActivity
      */
     private CharSequence mTitle;
 
-    private Toolbar toolbar;
+    @InjectView(R.id.toolbar) Toolbar mToolbar;
+    @InjectView(R.id.drawer_layout) DrawerLayout mDrawerLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
         // Create the activity graph by .plus-ing our modules onto the application graph.
         MyApplication application = (MyApplication) getApplication();
         activityGraph = application.getApplicationGraph().plus(getModules().toArray());
@@ -50,15 +54,23 @@ public class MainActivity extends ActionBarActivity
         // Inject ourselves so subclasses will have dependencies fulfilled when this method returns.
         activityGraph.inject(this);
 
+        super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        ButterKnife.inject(this);
 
-        mNavigationDrawerFragment = new NavigationDrawerFragment();
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.navigation_drawer, mNavigationDrawerFragment)
-                .commit();
+        setSupportActionBar(mToolbar);
+
+        if (savedInstanceState == null) {
+            mNavigationDrawerFragment = new NavigationDrawerFragment();
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.navigation_drawer, mNavigationDrawerFragment)
+                    .commit();
+        } else {
+            setTitle(savedInstanceState.getCharSequence(KEY_TITLE));
+            mNavigationDrawerFragment = (NavigationDrawerFragment) getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
+        }
         mTitle = getTitle();
     }
 
@@ -69,31 +81,40 @@ public class MainActivity extends ActionBarActivity
         // Set up the drawer.
         mNavigationDrawerFragment.setUp(
                 R.id.navigation_drawer,
-                (DrawerLayout) findViewById(R.id.drawer_layout),
-                toolbar);
+                mDrawerLayout,
+                mToolbar);
     }
 
     @Override
     public void onNavigationDrawerItemSelected(int position) {
         // update the main content by replacing fragments
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction()
-                .replace(R.id.container, HomeFragment.newInstance(position + 1))
-                .commit();
-    }
-
-    public void onSectionAttached(int number) {
-        switch (number) {
-            case 1:
+        Fragment fragment = null;
+        switch (position) {
+            case 0:
                 mTitle = getString(R.string.title_section1);
+                fragment = HomeFragment.newInstance();
+                break;
+            case 1:
+                mTitle = getString(R.string.title_section2);
+                fragment = FlickrFragment.newInstance();
                 break;
             case 2:
-                mTitle = getString(R.string.title_section2);
-                break;
-            case 3:
                 mTitle = getString(R.string.title_section3);
+                fragment = HomeFragment.newInstance();
                 break;
         }
+
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction()
+                .replace(R.id.container, fragment)
+                .commit();
+        setTitle(mTitle);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putCharSequence(KEY_TITLE, mTitle);
+        super.onSaveInstanceState(outState);
     }
 
     public void restoreActionBar() {
