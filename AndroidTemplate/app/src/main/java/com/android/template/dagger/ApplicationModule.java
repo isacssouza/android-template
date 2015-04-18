@@ -1,6 +1,7 @@
 package com.android.template.dagger;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 
 import com.android.template.MyApplication;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
@@ -16,6 +17,8 @@ import dagger.Provides;
  */
 @Module(library = true)
 public class ApplicationModule {
+    private static final String DEFAULT_PREFS = "DEFAULT_PREFS";
+
     private final MyApplication application;
 
     public ApplicationModule(MyApplication application) {
@@ -33,5 +36,10 @@ public class ApplicationModule {
     @Provides @Singleton
     GoogleCloudMessaging provideGCM() {
         return GoogleCloudMessaging.getInstance(application);
+    }
+
+    @Provides @Singleton
+    SharedPreferences provideSharedPreferences() {
+        return application.getSharedPreferences(DEFAULT_PREFS, Context.MODE_PRIVATE);
     }
 }

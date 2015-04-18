@@ -19,6 +19,7 @@ import android.view.MenuItem;
 import com.android.template.MyApplication;
 import com.android.template.R;
 import com.android.template.dagger.ActivityModule;
+import com.android.template.data.PreferencesStorage;
 import com.android.template.model.response.RegisterResponse;
 import com.android.template.network.UserService;
 import com.google.android.gms.common.ConnectionResult;
@@ -42,8 +43,6 @@ public class MainActivity extends ActionBarActivity
     private static final String TAG = MainActivity.class.getSimpleName();
 
     private static final String KEY_TITLE = "KEY_TITLE";
-    private static final String PROPERTY_REG_ID = "registration_id";
-    private static final String PROPERTY_APP_VERSION = "appVersion";
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
 
     private ObjectGraph activityGraph;
@@ -52,6 +51,9 @@ public class MainActivity extends ActionBarActivity
 
     @Inject
     UserService userService;
+
+    @Inject
+    PreferencesStorage preferencesStorage;
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -246,7 +248,7 @@ public class MainActivity extends ActionBarActivity
      */
     private String getRegistrationId(Context context) {
         final SharedPreferences prefs = getGcmPreferences(context);
-        String registrationId = prefs.getString(PROPERTY_REG_ID, null);
+        String registrationId = preferencesStorage.getRegId();
         if (registrationId == null) {
             Log.i(TAG, "Registration not found.");
             return "";
@@ -254,7 +256,7 @@ public class MainActivity extends ActionBarActivity
         // Check if app was updated; if so, it must clear the registration ID
         // since the existing regID is not guaranteed to work with the new
         // app version.
-        int registeredVersion = prefs.getInt(PROPERTY_APP_VERSION, Integer.MIN_VALUE);
+        int registeredVersion = preferencesStorage.getAppVersion();
         int currentVersion = getAppVersion(context);
         if (registeredVersion != currentVersion) {
             Log.i(TAG, "App version changed.");
@@ -345,9 +347,7 @@ public class MainActivity extends ActionBarActivity
         final SharedPreferences prefs = getGcmPreferences(context);
         int appVersion = getAppVersion(context);
         Log.i(TAG, "Saving regId on app version " + appVersion);
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.putString(PROPERTY_REG_ID, regId);
-        editor.putInt(PROPERTY_APP_VERSION, appVersion);
-        editor.apply();
+        preferencesStorage.setRegId(regId);
+        preferencesStorage.setAppVersion(appVersion);
     }
 }
