@@ -152,7 +152,7 @@ public class MainActivity extends ActionBarActivity
         switch (position) {
             case 0:
                 mTitle = getString(R.string.title_section1);
-                fragment = HomeFragment.newInstance();
+                fragment = MovieFragment.newInstance();
                 break;
             case 1:
                 mTitle = getString(R.string.title_section2);
@@ -160,7 +160,7 @@ public class MainActivity extends ActionBarActivity
                 break;
             case 2:
                 mTitle = getString(R.string.title_section3);
-                fragment = HomeFragment.newInstance();
+                fragment = MovieFragment.newInstance();
                 break;
         }
 

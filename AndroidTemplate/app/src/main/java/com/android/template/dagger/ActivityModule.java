@@ -4,7 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 
 import com.android.template.ui.FlickrFragment;
-import com.android.template.ui.HomeFragment;
+import com.android.template.ui.MovieFragment;
 import com.android.template.ui.MainActivity;
 import com.android.template.ui.NavigationDrawerFragment;
 import com.android.template.R;
@@ -28,7 +28,7 @@ import retrofit.RestAdapter;
         injects = {
                 MainActivity.class,
                 NavigationDrawerFragment.class,
-                HomeFragment.class,
+                MovieFragment.class,
                 FlickrFragment.class,
                 MovieService.class,
                 MovieAdapter.class

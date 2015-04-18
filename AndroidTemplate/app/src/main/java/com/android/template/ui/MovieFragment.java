@@ -33,8 +33,8 @@ import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.Subscriptions;
 
-public class HomeFragment extends Fragment implements Observer<Movie>, SwipeRefreshLayout.OnRefreshListener {
-    private static final String TAG = HomeFragment.class.getSimpleName();
+public class MovieFragment extends Fragment implements Observer<Movie>, SwipeRefreshLayout.OnRefreshListener {
+    private static final String TAG = MovieFragment.class.getSimpleName();
 
     @Inject
     MovieService movieService;
@@ -49,8 +49,8 @@ public class HomeFragment extends Fragment implements Observer<Movie>, SwipeRefr
      * Returns a new instance of this fragment
      * number.
      */
-    public static HomeFragment newInstance() {
-        return new HomeFragment();
+    public static MovieFragment newInstance() {
+        return new MovieFragment();
     }
 
     @Override

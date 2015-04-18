@@ -14,8 +14,8 @@ import rx.Observable;
  */
 public interface MovieService {
     @GET("/")
-    public Observable<Search> searchByTitle(@Query("s") String title);
+    Observable<Search> searchByTitle(@Query("s") String title);
 
     @GET("/")
-    public Observable<Movie> getById(@Query("i") String id);
+    Observable<Movie> getById(@Query("i") String id);
 }
