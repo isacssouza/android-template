@@ -3,20 +3,21 @@ package com.android.template.dagger;
 import android.content.Context;
 import android.view.LayoutInflater;
 
-import com.android.template.ui.FlickrFragment;
-import com.android.template.ui.MovieFragment;
-import com.android.template.ui.MainActivity;
-import com.android.template.ui.NavigationDrawerFragment;
 import com.android.template.R;
 import com.android.template.adapter.MovieAdapter;
 import com.android.template.network.FlickrService;
 import com.android.template.network.MovieService;
 import com.android.template.network.UserService;
+import com.android.template.ui.FlickrFragment;
+import com.android.template.ui.MainActivity;
+import com.android.template.ui.MovieFragment;
+import com.android.template.ui.NavigationDrawerFragment;
 
 import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
 
 /**
@@ -70,6 +71,7 @@ public class ActivityModule {
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setLogLevel(RestAdapter.LogLevel.FULL)
                 .setEndpoint(activity.getString(R.string.flickr_base_uri))
+                .setRequestInterceptor(new FlickrInterceptor(activity))
                 .build();
 
         return restAdapter.create(FlickrService.class);
@@ -78,5 +80,17 @@ public class ActivityModule {
     @Provides @Singleton
     LayoutInflater provideLayoutInflater() {
         return (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    }
+
+    static class FlickrInterceptor implements RequestInterceptor {
+        private Context context;
+
+        public FlickrInterceptor(Context context) {
+            this.context = context;
+        }
+
+        @Override public void intercept(RequestFacade request) {
+            request.addQueryParam("api_key", context.getString(R.string.flickr_api_key));
+        }
     }
 }

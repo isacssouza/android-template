@@ -165,14 +165,15 @@ public class FlickrFragment extends Fragment implements Observer<FlickrPhoto>, S
 
     @Override
     public void onCompleted() {
-        Log.i(TAG, "Movie subscriber completed.");
+        Log.i(TAG, "Flickr subscriber completed.");
 
         swipeLayout.setRefreshing(false);
     }
 
     @Override
     public void onError(Throwable e) {
-        Log.e(TAG, "Movie subscriber error.", e);
+        Log.e(TAG, "Flickr subscriber error.", e);
+        onCompleted();
     }
 
     @Override

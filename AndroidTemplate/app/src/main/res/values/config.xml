@@ -5,4 +5,5 @@
     <string name="flickr_photo_uri_format">https://farm%1$d.staticflickr.com/%2$s/%3$s_%4$s.jpg</string>
     <string name="sender_id">YOUR_GCM_SENDER_ID</string>
     <string name="movie_base_uri">"http://www.omdbapi.com"</string>
+    <string name="flickr_api_key">YOUR_API_KEY</string>
 </resources>

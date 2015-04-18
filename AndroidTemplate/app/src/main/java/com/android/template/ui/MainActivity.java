@@ -151,11 +151,11 @@ public class MainActivity extends ActionBarActivity
         Fragment fragment = null;
         switch (position) {
             case 0:
-                mTitle = getString(R.string.title_section1);
+                mTitle = getString(R.string.movies_title);
                 fragment = MovieFragment.newInstance();
                 break;
             case 1:
-                mTitle = getString(R.string.title_section2);
+                mTitle = getString(R.string.images_title);
                 fragment = FlickrFragment.newInstance();
                 break;
             case 2:
