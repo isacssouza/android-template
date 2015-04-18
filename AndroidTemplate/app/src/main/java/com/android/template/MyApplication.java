@@ -3,12 +3,10 @@ package com.android.template;
 import android.app.Application;
 import android.os.StrictMode;
 
-import com.android.template.androidtemplate.BuildConfig;
-import com.squareup.picasso.Picasso;
-
-import dagger.ObjectGraph;
 import java.util.Arrays;
 import java.util.List;
+
+import dagger.ObjectGraph;
 
 public class MyApplication extends Application {
     private ObjectGraph applicationGraph;

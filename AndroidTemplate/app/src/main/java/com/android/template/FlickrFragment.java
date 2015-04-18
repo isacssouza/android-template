@@ -19,7 +19,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.android.template.adapter.FlickrAdapter;
-import com.android.template.androidtemplate.R;
 import com.android.template.model.FlickrPhoto;
 import com.android.template.model.FlickrSearch;
 import com.android.template.network.FlickrManager;

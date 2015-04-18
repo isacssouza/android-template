@@ -8,7 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.template.MainActivity;
-import com.android.template.androidtemplate.R;
+import com.android.template.R;
 import com.android.template.model.Movie;
 import com.squareup.picasso.Picasso;
 

@@ -6,3 +6,4 @@
 /build
 .idea
 *.iml
+app/src/debug/res/values/config.xml

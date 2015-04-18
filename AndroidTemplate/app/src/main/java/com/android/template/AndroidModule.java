@@ -1,12 +1,13 @@
 package com.android.template;
 
 import android.content.Context;
-import android.location.LocationManager;
-import dagger.Module;
-import dagger.Provides;
+
+import com.google.android.gms.gcm.GoogleCloudMessaging;
+
 import javax.inject.Singleton;
 
-import static android.content.Context.LOCATION_SERVICE;
+import dagger.Module;
+import dagger.Provides;
 
 /**
  * A module for Android-specific dependencies which require a {@link Context} or
@@ -28,7 +29,8 @@ public class AndroidModule {
         return application;
     }
 
-    @Provides @Singleton LocationManager provideLocationManager() {
-        return (LocationManager) application.getSystemService(LOCATION_SERVICE);
+    @Provides @Singleton
+    GoogleCloudMessaging provideGCM() {
+        return GoogleCloudMessaging.getInstance(application);
     }
 }

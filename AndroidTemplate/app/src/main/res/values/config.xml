@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="base_uri">"http://www.omdbapi.com"</string>
+    <string name="base_uri">http://192.168.1.111:8080/_ah/api/</string>
     <string name="flickr_base_uri">https://api.flickr.com/services/rest</string>
     <string name="flickr_photo_uri_format">https://farm%1$d.staticflickr.com/%2$s/%3$s_%4$s.jpg</string>
+    <string name="sender_id">YOUR_GCM_SENDER_ID</string>
+    <string name="movie_base_uri">"http://www.omdbapi.com"</string>
 </resources>

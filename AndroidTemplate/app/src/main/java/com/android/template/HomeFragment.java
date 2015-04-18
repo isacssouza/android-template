@@ -16,10 +16,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.android.template.adapter.MovieAdapter;
-import com.android.template.androidtemplate.R;
 import com.android.template.model.Movie;
 import com.android.template.model.Search;
-import com.android.template.network.FlickrManager;
 import com.android.template.network.MovieManager;
 
 import javax.inject.Inject;

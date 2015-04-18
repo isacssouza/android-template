@@ -4,9 +4,9 @@ import android.content.Context;
 import android.view.LayoutInflater;
 
 import com.android.template.adapter.MovieAdapter;
-import com.android.template.androidtemplate.R;
 import com.android.template.network.FlickrManager;
 import com.android.template.network.MovieManager;
+import com.android.template.network.UserManager;
 
 import javax.inject.Singleton;
 
@@ -45,10 +45,19 @@ public class ActivityModule {
     @Provides @Singleton
     MovieManager provideMovieManager() {
         RestAdapter restAdapter = new RestAdapter.Builder()
-                .setEndpoint(activity.getString(R.string.base_uri))
+                .setEndpoint(activity.getString(R.string.movie_base_uri))
                 .build();
 
         return restAdapter.create(MovieManager.class);
+    }
+
+    @Provides @Singleton
+    UserManager provideUserManager() {
+        RestAdapter restAdapter = new RestAdapter.Builder()
+                .setEndpoint(activity.getString(R.string.base_uri))
+                .build();
+
+        return restAdapter.create(UserManager.class);
     }
 
     @Provides @Singleton
