@@ -1,7 +1,8 @@
-package com.android.template;
+package com.android.template.dagger;
 
 import android.content.Context;
 
+import com.android.template.MyApplication;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 import javax.inject.Singleton;
@@ -14,10 +15,10 @@ import dagger.Provides;
  * {@link android.app.Application} to create.
  */
 @Module(library = true)
-public class AndroidModule {
+public class ApplicationModule {
     private final MyApplication application;
 
-    public AndroidModule(MyApplication application) {
+    public ApplicationModule(MyApplication application) {
         this.application = application;
     }
 

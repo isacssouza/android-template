@@ -1,4 +1,4 @@
-package com.android.template;
+package com.android.template.dagger;
 
 import java.lang.annotation.Retention;
 import javax.inject.Qualifier;

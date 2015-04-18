@@ -1,12 +1,17 @@
-package com.android.template;
+package com.android.template.dagger;
 
 import android.content.Context;
 import android.view.LayoutInflater;
 
+import com.android.template.ui.FlickrFragment;
+import com.android.template.ui.HomeFragment;
+import com.android.template.ui.MainActivity;
+import com.android.template.ui.NavigationDrawerFragment;
+import com.android.template.R;
 import com.android.template.adapter.MovieAdapter;
-import com.android.template.network.FlickrManager;
-import com.android.template.network.MovieManager;
-import com.android.template.network.UserManager;
+import com.android.template.network.FlickrService;
+import com.android.template.network.MovieService;
+import com.android.template.network.UserService;
 
 import javax.inject.Singleton;
 
@@ -25,10 +30,10 @@ import retrofit.RestAdapter;
                 NavigationDrawerFragment.class,
                 HomeFragment.class,
                 FlickrFragment.class,
-                MovieManager.class,
+                MovieService.class,
                 MovieAdapter.class
         },
-        addsTo = AndroidModule.class
+        addsTo = ApplicationModule.class
 )
 public class ActivityModule {
     private final MainActivity activity;
@@ -43,31 +48,31 @@ public class ActivityModule {
     }
 
     @Provides @Singleton
-    MovieManager provideMovieManager() {
+    MovieService provideMovieManager() {
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setEndpoint(activity.getString(R.string.movie_base_uri))
                 .build();
 
-        return restAdapter.create(MovieManager.class);
+        return restAdapter.create(MovieService.class);
     }
 
     @Provides @Singleton
-    UserManager provideUserManager() {
+    UserService provideUserManager() {
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setEndpoint(activity.getString(R.string.base_uri))
                 .build();
 
-        return restAdapter.create(UserManager.class);
+        return restAdapter.create(UserService.class);
     }
 
     @Provides @Singleton
-    FlickrManager provideFlickrManager() {
+    FlickrService provideFlickrManager() {
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setLogLevel(RestAdapter.LogLevel.FULL)
                 .setEndpoint(activity.getString(R.string.flickr_base_uri))
                 .build();
 
-        return restAdapter.create(FlickrManager.class);
+        return restAdapter.create(FlickrService.class);
     }
 
     @Provides @Singleton

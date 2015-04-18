@@ -12,7 +12,7 @@ import rx.Observable;
  *
  * Created by isacssouza on 3/10/15.
  */
-public interface MovieManager {
+public interface MovieService {
     @GET("/")
     public Observable<Search> searchByTitle(@Query("s") String title);
 

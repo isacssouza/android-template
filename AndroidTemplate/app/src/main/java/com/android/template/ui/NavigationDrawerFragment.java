@@ -1,4 +1,4 @@
-package com.android.template;
+package com.android.template.ui;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
@@ -21,6 +21,8 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+
+import com.android.template.R;
 
 import butterknife.ButterKnife;
 

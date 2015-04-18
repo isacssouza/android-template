@@ -1,5 +1,7 @@
 package com.android.template;
 
+import com.android.template.ui.MainActivity;
+
 import org.junit.Test;
 
 import static org.hamcrest.core.IsNull.notNullValue;

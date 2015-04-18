@@ -1,4 +1,4 @@
-package com.android.template;
+package com.android.template.ui;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -16,8 +16,11 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.android.template.model.RegisterResponse;
-import com.android.template.network.UserManager;
+import com.android.template.MyApplication;
+import com.android.template.R;
+import com.android.template.dagger.ActivityModule;
+import com.android.template.model.response.RegisterResponse;
+import com.android.template.network.UserService;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
@@ -47,7 +50,8 @@ public class MainActivity extends ActionBarActivity
 
     @Inject GoogleCloudMessaging gcm;
 
-    @Inject UserManager userManager;
+    @Inject
+    UserService userService;
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -284,7 +288,7 @@ public class MainActivity extends ActionBarActivity
     }
 
     private void sendRegistrationIdToBackend(final String regId) {
-        userManager.register(regId)
+        userService.register(regId)
                 .subscribe(new Action1<RegisterResponse>() {
                     @Override
                     public void call(RegisterResponse registerResponse) {

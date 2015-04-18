@@ -1,4 +1,4 @@
-package com.android.template;
+package com.android.template.ui;
 
 import android.app.Activity;
 import android.graphics.Point;
@@ -15,10 +15,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.android.template.R;
 import com.android.template.adapter.MovieAdapter;
 import com.android.template.model.Movie;
 import com.android.template.model.Search;
-import com.android.template.network.MovieManager;
+import com.android.template.network.MovieService;
 
 import javax.inject.Inject;
 
@@ -36,7 +37,7 @@ public class HomeFragment extends Fragment implements Observer<Movie>, SwipeRefr
     private static final String TAG = HomeFragment.class.getSimpleName();
 
     @Inject
-    MovieManager movieManager;
+    MovieService movieService;
 
     @Inject
     MovieAdapter movieAdapter;
@@ -127,7 +128,7 @@ public class HomeFragment extends Fragment implements Observer<Movie>, SwipeRefr
 
     @Override
     public void onRefresh() {
-        moviesSubscription = AppObservable.bindFragment(this, movieManager.searchByTitle("The")
+        moviesSubscription = AppObservable.bindFragment(this, movieService.searchByTitle("The")
                 .concatMap(new Func1<Search, Observable<Movie>>() {
                     @Override
                     public Observable<Movie> call(Search search) {
@@ -137,7 +138,7 @@ public class HomeFragment extends Fragment implements Observer<Movie>, SwipeRefr
                 .flatMap(new Func1<Movie, Observable<Movie>>() {
                     @Override
                     public Observable<Movie> call(Movie movie) {
-                        return movieManager.getById(movie.getImdbID());
+                        return movieService.getById(movie.getImdbID());
                     }
                 })
                 .subscribeOn(Schedulers.newThread())

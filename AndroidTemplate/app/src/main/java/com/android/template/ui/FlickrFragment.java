@@ -1,4 +1,4 @@
-package com.android.template;
+package com.android.template.ui;
 
 import android.app.Activity;
 import android.graphics.Point;
@@ -18,10 +18,11 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.android.template.R;
 import com.android.template.adapter.FlickrAdapter;
 import com.android.template.model.FlickrPhoto;
 import com.android.template.model.FlickrSearch;
-import com.android.template.network.FlickrManager;
+import com.android.template.network.FlickrService;
 
 import javax.inject.Inject;
 
@@ -43,7 +44,7 @@ public class FlickrFragment extends Fragment implements Observer<FlickrPhoto>, S
     private static final String KEY_SEARCH_TEXT = "KEY_SEARCH_TEXT";
 
     @Inject
-    FlickrManager flickrManager;
+    FlickrService flickrService;
 
     @Inject
     FlickrAdapter flickrAdapter;
@@ -182,7 +183,7 @@ public class FlickrFragment extends Fragment implements Observer<FlickrPhoto>, S
 
     @Override
     public void onRefresh() {
-        subscription = AppObservable.bindFragment(this, flickrManager.search(searchText)
+        subscription = AppObservable.bindFragment(this, flickrService.search(searchText)
                 .concatMap(new Func1<FlickrSearch, Observable<FlickrPhoto>>() {
                     @Override
                     public Observable<FlickrPhoto> call(FlickrSearch search) {

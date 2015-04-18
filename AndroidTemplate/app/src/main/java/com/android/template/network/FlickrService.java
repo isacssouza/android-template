@@ -11,7 +11,7 @@ import rx.Observable;
 /**
  * Created by isacssouza on 4/2/15.
  */
-public interface FlickrManager {
+public interface FlickrService {
     @GET("/?method=flickr.photos.search&api_key=4143542731626dd57dc916803c3a08c7&&format=json&nojsoncallback=1")
     Observable<FlickrSearch> search(@Query("text") String text);
 }

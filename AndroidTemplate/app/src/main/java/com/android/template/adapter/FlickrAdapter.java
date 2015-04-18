@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.android.template.MainActivity;
+import com.android.template.ui.MainActivity;
 import com.android.template.R;
 import com.android.template.model.FlickrPhoto;
 import com.squareup.picasso.Picasso;

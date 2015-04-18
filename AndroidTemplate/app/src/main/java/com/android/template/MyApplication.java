@@ -3,6 +3,8 @@ package com.android.template;
 import android.app.Application;
 import android.os.StrictMode;
 
+import com.android.template.dagger.ApplicationModule;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -26,10 +28,10 @@ public class MyApplication extends Application {
      * provide additional modules provided they call {@code super.getModules()}.
      */
     protected List<Object> getModules() {
-        return Arrays.<Object>asList(new AndroidModule(this));
+        return Arrays.<Object>asList(new ApplicationModule(this));
     }
 
-    ObjectGraph getApplicationGraph() {
+    public ObjectGraph getApplicationGraph() {
         return applicationGraph;
     }
 }

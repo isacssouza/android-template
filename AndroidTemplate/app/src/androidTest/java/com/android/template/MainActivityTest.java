@@ -4,6 +4,7 @@ import android.support.v7.widget.Toolbar;
 import android.test.ActivityInstrumentationTestCase2;
 
 import com.android.template.androidtemplate.R;
+import com.android.template.ui.MainActivity;
 import com.robotium.solo.Solo;
 
 public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActivity> {
