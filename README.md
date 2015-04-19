@@ -11,7 +11,7 @@ Libraries used on this project:
 - [Retrofit](https://github.com/square/retrofit)
 - [ButterKnife](https://github.com/JakeWharton/butterknife)
 - [Picasso](https://github.com/square/picasso)
-- [Robotium](https://code.google.com/p/robotium/)
+- [Espresso](https://code.google.com/p/android-test-kit/wiki/Espresso)
 - [Mockito](https://github.com/mockito/mockito)
 - [JUnit](http://junit.org/)
 
