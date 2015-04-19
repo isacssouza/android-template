@@ -45,7 +45,7 @@ task jacocoTestReport(type: JacocoReport, dependsOn: "testCoverage") {
 }
 
 coveralls {
-    sourceDirs = files('src/main/java')
+    sourceDirs = files('src/main/java').files.absolutePath
 }
 
 def isTravis = "true".equals(System.getenv("TRAVIS"))
