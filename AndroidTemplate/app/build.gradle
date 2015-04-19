@@ -16,13 +16,13 @@ jacoco {
     toolVersion = "0.7.1.201405082137"
 }
 
-task jacocoTestReport(type: JacocoReport, dependsOn: "testDebug") {
+task jacocoTestReport(type: JacocoReport, dependsOn: "testCoverage") {
     group = "Reporting"
 
     description = "Generate Jacoco coverage reports"
 
     classDirectories = fileTree(
-            dir: 'build/intermediates/classes/debug',
+            dir: 'build/intermediates/classes/coverage',
             excludes: ['**/R.class',
                        '**/R$*.class',
                        '**/*$ViewInjector*.*',
@@ -34,13 +34,18 @@ task jacocoTestReport(type: JacocoReport, dependsOn: "testDebug") {
     )
 
     sourceDirectories = files('src/main/java')
-    executionData = files('build/jacoco/testDebug.exec')
+    executionData = files('build/jacoco/testCoverage.exec')
 
     reports {
         html.enabled true
         xml.enabled true
+        xml.destination = "${buildDir}/reports/jacoco/test/jacocoTestReport.xml"
     }
 
+}
+
+coveralls {
+    sourceDirs = files('src/main/java').files.absolutePath
 }
 
 def isTravis = "true".equals(System.getenv("TRAVIS"))
