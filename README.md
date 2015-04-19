@@ -1,6 +1,6 @@
 # android-template
 
-[![Build Status](https://travis-ci.org/isacssouza/android-template.svg?branch=master)](https://travis-ci.org/isacssouza/android-template) [![Coverage Status](https://coveralls.io/repos/isacssouza/android-template/badge.svg)](https://coveralls.io/r/isacssouza/android-template)
+[![Build Status](https://travis-ci.org/isacssouza/android-template.svg?branch=dev)](https://travis-ci.org/isacssouza/android-template) [![Coverage Status](https://coveralls.io/repos/isacssouza/android-template/badge.svg?branch=dev)](https://coveralls.io/r/isacssouza/android-template?branch=dev)
 
 Libraries used on this project:
 
