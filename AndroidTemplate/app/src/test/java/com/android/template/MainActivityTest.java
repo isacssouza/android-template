@@ -12,8 +12,6 @@ public class MainActivityTest {
     public void testIt() {
         MainActivity mainActivity = new MainActivity();
 
-        // failing test gives much better feedback
-        // to show that all works correctly ;)
         assertThat(mainActivity, notNullValue());
     }
 }

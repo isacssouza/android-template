@@ -1,40 +1,36 @@
 package com.android.template;
 
-import android.support.v7.widget.Toolbar;
 import android.test.ActivityInstrumentationTestCase2;
 
-import com.android.template.androidtemplate.R;
 import com.android.template.ui.MainActivity;
-import com.robotium.solo.Solo;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import static android.support.test.espresso.Espresso.onView;
+import static android.support.test.espresso.assertion.ViewAssertions.matches;
+import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static android.support.test.espresso.matcher.ViewMatchers.withId;
 
 public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActivity> {
-    private Solo solo;
-
     public MainActivityTest() {
         super(MainActivity.class);
     }
 
+    @Before
     @Override
     public void setUp() {
-        solo = new Solo(getInstrumentation(), getActivity());
-
-        solo.scrollToSide(Solo.RIGHT);
+        getActivity();
     }
 
+    @After
     @Override
     public void tearDown() {
-        solo.finishOpenedActivities();
     }
 
-    public void testClickOnAction() {
-        solo.clickOnView(solo.getView(R.id.action_example));
-
-        solo.waitForText("Example action.");
-    }
-
+    @Test
     public void testHasToolbar() {
-        Toolbar toolbar = (Toolbar) solo.getView(R.id.toolbar);
-
-        assertNotNull(toolbar);
+        onView(withId(R.id.toolbar)).check(matches(isDisplayed()));
     }
 }
