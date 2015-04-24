@@ -31,7 +31,6 @@ import rx.Observable;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.app.AppObservable;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.Subscriptions;
@@ -173,7 +172,8 @@ public class FlickrFragment extends Fragment implements Observer<FlickrPhoto>, S
     @Override
     public void onError(Throwable e) {
         Log.e(TAG, "Flickr subscriber error.", e);
-        onCompleted();
+
+        swipeLayout.setRefreshing(false);
     }
 
     @Override
@@ -185,14 +185,13 @@ public class FlickrFragment extends Fragment implements Observer<FlickrPhoto>, S
     @Override
     public void onRefresh() {
         subscription = AppObservable.bindFragment(this, flickrService.search(searchText)
-                .concatMap(new Func1<FlickrSearch, Observable<FlickrPhoto>>() {
+                .flatMap(new Func1<FlickrSearch, Observable<FlickrPhoto>>() {
                     @Override
                     public Observable<FlickrPhoto> call(FlickrSearch search) {
                         return Observable.from(search.getPhotos().getPhoto());
                     }
-                })
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread()))
+                }))
+                .subscribeOn(Schedulers.io())
                 .subscribe(this);
     }
 }

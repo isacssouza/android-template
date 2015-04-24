@@ -28,7 +28,6 @@ import rx.Observable;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.app.AppObservable;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.Subscriptions;
@@ -118,6 +117,8 @@ public class MovieFragment extends Fragment implements Observer<Movie>, SwipeRef
     @Override
     public void onError(Throwable e) {
         Log.e(TAG, "Movie subscriber error.", e);
+
+        swipeLayout.setRefreshing(false);
     }
 
     @Override
@@ -129,20 +130,25 @@ public class MovieFragment extends Fragment implements Observer<Movie>, SwipeRef
     @Override
     public void onRefresh() {
         moviesSubscription = AppObservable.bindFragment(this, movieService.searchByTitle("The")
-                .concatMap(new Func1<Search, Observable<Movie>>() {
+                .flatMap(new Func1<Search, Observable<Movie>>() {
                     @Override
                     public Observable<Movie> call(Search search) {
                         return Observable.from(search.getSearch());
                     }
                 })
-                .flatMap(new Func1<Movie, Observable<Movie>>() {
+                .map(new Func1<Movie, String>() {
                     @Override
-                    public Observable<Movie> call(Movie movie) {
-                        return movieService.getById(movie.getImdbID());
+                    public String call(Movie movie) {
+                        return movie.getImdbID();
                     }
                 })
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread()))
+                .concatMap(new Func1<String, Observable<Movie>>() {
+                    @Override
+                    public Observable<Movie> call(String imdbId) {
+                        return movieService.getById(imdbId);
+                    }
+                }))
+                .subscribeOn(Schedulers.io())
                 .subscribe(this);
     }
 }

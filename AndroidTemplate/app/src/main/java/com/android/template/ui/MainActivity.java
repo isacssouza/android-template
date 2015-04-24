@@ -1,7 +1,6 @@
 package com.android.template.ui;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
@@ -247,7 +246,6 @@ public class MainActivity extends AppCompatActivity
      *         registration ID.
      */
     private String getRegistrationId(Context context) {
-        final SharedPreferences prefs = getGcmPreferences(context);
         String registrationId = preferencesStorage.getRegId();
         if (registrationId == null) {
             Log.i(TAG, "Registration not found.");
@@ -277,16 +275,6 @@ public class MainActivity extends AppCompatActivity
             // should never happen
             throw new RuntimeException("Could not get package name: " + e);
         }
-    }
-
-    /**
-     * @return Application's {@code SharedPreferences}.
-     */
-    private SharedPreferences getGcmPreferences(Context context) {
-        // This sample app persists the registration ID in shared preferences, but
-        // how you store the regID in your app is up to you.
-        return getSharedPreferences(MainActivity.class.getSimpleName(),
-                Context.MODE_PRIVATE);
     }
 
     private void sendRegistrationIdToBackend(final String regId) {
@@ -344,7 +332,6 @@ public class MainActivity extends AppCompatActivity
      * @param regId registration ID
      */
     private void storeRegistrationId(Context context, String regId) {
-        final SharedPreferences prefs = getGcmPreferences(context);
         int appVersion = getAppVersion(context);
         Log.i(TAG, "Saving regId on app version " + appVersion);
         preferencesStorage.setRegId(regId);
