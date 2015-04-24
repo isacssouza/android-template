@@ -11,6 +11,7 @@ import javax.inject.Inject;
 public class PreferencesStorage {
     private static final String KEY_REG_ID = "KEY_REG_ID";
     private static final String KEY_APP_VERSION = "KEY_APP_VERSION";
+    private static final String PREF_USER_LEARNED_DRAWER = "navigation_drawer_learned";
 
     private SharedPreferences mSharedPreferences;
 
@@ -34,6 +35,15 @@ public class PreferencesStorage {
     public void setAppVersion(int newAppVersion) {
         mSharedPreferences.edit()
                 .putInt(KEY_APP_VERSION, newAppVersion)
+                .apply();
+    }
+
+    public boolean getUserLearnedDrawer() {
+        return mSharedPreferences.getBoolean(PREF_USER_LEARNED_DRAWER, false);
+    }
+    public void setUserLearnedDrawer(boolean value) {
+        mSharedPreferences.edit()
+                .putBoolean(PREF_USER_LEARNED_DRAWER, value)
                 .apply();
     }
 }

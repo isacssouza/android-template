@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.android.template.MyApplication;
+import com.android.template.ui.NavigationDrawerFragment;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 import javax.inject.Singleton;
@@ -15,7 +16,9 @@ import dagger.Provides;
  * A module for Android-specific dependencies which require a {@link Context} or
  * {@link android.app.Application} to create.
  */
-@Module(library = true)
+@Module(injects = {
+        NavigationDrawerFragment.class
+}, library = true)
 public class ApplicationModule {
     private static final String DEFAULT_PREFS = "DEFAULT_PREFS";
 

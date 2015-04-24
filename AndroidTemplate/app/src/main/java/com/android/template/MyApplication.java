@@ -34,4 +34,9 @@ public class MyApplication extends Application {
     public ObjectGraph getApplicationGraph() {
         return applicationGraph;
     }
+
+    /** Inject the supplied {@code object} using the application-specific graph. */
+    public void inject(Object object) {
+        applicationGraph.inject(object);
+    }
 }
