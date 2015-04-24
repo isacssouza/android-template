@@ -1,6 +1,6 @@
 # android-template
 
-[![Build Status](https://travis-ci.org/isacssouza/android-template.svg?branch=master)](https://travis-ci.org/isacssouza/android-template) [![Coverage Status](https://coveralls.io/repos/isacssouza/android-template/badge.svg)](https://coveralls.io/r/isacssouza/android-template)
+[![Build Status](https://travis-ci.org/isacssouza/android-template.svg?branch=dev)](https://travis-ci.org/isacssouza/android-template) [![Coverage Status](https://coveralls.io/repos/isacssouza/android-template/badge.svg?branch=dev)](https://coveralls.io/r/isacssouza/android-template?branch=dev)
 
 Libraries used on this project:
 
@@ -11,7 +11,7 @@ Libraries used on this project:
 - [Retrofit](https://github.com/square/retrofit)
 - [ButterKnife](https://github.com/JakeWharton/butterknife)
 - [Picasso](https://github.com/square/picasso)
-- [Robotium](https://code.google.com/p/robotium/)
+- [Espresso](https://code.google.com/p/android-test-kit/wiki/Espresso)
 - [Mockito](https://github.com/mockito/mockito)
 - [JUnit](http://junit.org/)
 
