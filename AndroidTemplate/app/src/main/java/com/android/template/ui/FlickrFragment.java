@@ -1,10 +1,8 @@
 package com.android.template.ui;
 
-import android.app.Activity;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
@@ -29,16 +27,12 @@ import javax.inject.Inject;
 import butterknife.ButterKnife;
 import rx.Observable;
 import rx.Observer;
-import rx.Subscription;
-import rx.android.app.AppObservable;
 import rx.functions.Func1;
-import rx.schedulers.Schedulers;
-import rx.subscriptions.Subscriptions;
 
 /**
  * A fragment that shows flickr photos on a grid.
  */
-public class FlickrFragment extends Fragment implements Observer<FlickrPhoto>, SwipeRefreshLayout.OnRefreshListener {
+public class FlickrFragment extends BaseFragment implements Observer<FlickrPhoto>, SwipeRefreshLayout.OnRefreshListener {
     private static final String TAG = FlickrFragment.class.getSimpleName();
     private static final String KEY_SEARCH_TEXT = "KEY_SEARCH_TEXT";
 
@@ -49,7 +43,6 @@ public class FlickrFragment extends Fragment implements Observer<FlickrPhoto>, S
     FlickrAdapter flickrAdapter;
 
     private SwipeRefreshLayout swipeLayout;
-    private Subscription subscription = Subscriptions.empty();
     private SearchView searchView;
     private String searchText = "meerkat";
 
@@ -59,13 +52,6 @@ public class FlickrFragment extends Fragment implements Observer<FlickrPhoto>, S
      */
     public static FlickrFragment newInstance() {
         return new FlickrFragment();
-    }
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-
-        ((MainActivity) activity).inject(this);
     }
 
     @Override
@@ -155,14 +141,6 @@ public class FlickrFragment extends Fragment implements Observer<FlickrPhoto>, S
     }
 
     @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-
-        subscription.unsubscribe();
-        ButterKnife.reset(this);
-    }
-
-    @Override
     public void onCompleted() {
         Log.i(TAG, "Flickr subscriber completed.");
 
@@ -184,14 +162,12 @@ public class FlickrFragment extends Fragment implements Observer<FlickrPhoto>, S
 
     @Override
     public void onRefresh() {
-        subscription = AppObservable.bindFragment(this, flickrService.search(searchText)
+        bind(flickrService.search(searchText)
                 .flatMap(new Func1<FlickrSearch, Observable<FlickrPhoto>>() {
                     @Override
                     public Observable<FlickrPhoto> call(FlickrSearch search) {
                         return Observable.from(search.getPhotos().getPhoto());
                     }
-                }))
-                .subscribeOn(Schedulers.io())
-                .subscribe(this);
+                }), this);
     }
 }

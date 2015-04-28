@@ -1,10 +1,8 @@
 package com.android.template.ui;
 
-import android.app.Activity;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -26,13 +24,9 @@ import javax.inject.Inject;
 import butterknife.ButterKnife;
 import rx.Observable;
 import rx.Observer;
-import rx.Subscription;
-import rx.android.app.AppObservable;
 import rx.functions.Func1;
-import rx.schedulers.Schedulers;
-import rx.subscriptions.Subscriptions;
 
-public class MovieFragment extends Fragment implements Observer<Movie>, SwipeRefreshLayout.OnRefreshListener {
+public class MovieFragment extends BaseFragment implements Observer<Movie>, SwipeRefreshLayout.OnRefreshListener {
     private static final String TAG = MovieFragment.class.getSimpleName();
 
     @Inject
@@ -42,7 +36,6 @@ public class MovieFragment extends Fragment implements Observer<Movie>, SwipeRef
     MovieAdapter movieAdapter;
 
     private SwipeRefreshLayout swipeLayout;
-    private Subscription moviesSubscription = Subscriptions.empty();
 
     /**
      * Returns a new instance of this fragment
@@ -50,13 +43,6 @@ public class MovieFragment extends Fragment implements Observer<Movie>, SwipeRef
      */
     public static MovieFragment newInstance() {
         return new MovieFragment();
-    }
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-
-        ((MainActivity) activity).inject(this);
     }
 
     @Override
@@ -100,14 +86,6 @@ public class MovieFragment extends Fragment implements Observer<Movie>, SwipeRef
     }
 
     @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-
-        moviesSubscription.unsubscribe();
-        ButterKnife.reset(this);
-    }
-
-    @Override
     public void onCompleted() {
         Log.i(TAG, "Movie subscriber completed.");
 
@@ -129,7 +107,7 @@ public class MovieFragment extends Fragment implements Observer<Movie>, SwipeRef
 
     @Override
     public void onRefresh() {
-        moviesSubscription = AppObservable.bindFragment(this, movieService.searchByTitle("The")
+        bind(movieService.searchByTitle("The")
                 .flatMap(new Func1<Search, Observable<Movie>>() {
                     @Override
                     public Observable<Movie> call(Search search) {
@@ -147,8 +125,6 @@ public class MovieFragment extends Fragment implements Observer<Movie>, SwipeRef
                     public Observable<Movie> call(String imdbId) {
                         return movieService.getById(imdbId);
                     }
-                }))
-                .subscribeOn(Schedulers.io())
-                .subscribe(this);
+                }), this);
     }
 }
