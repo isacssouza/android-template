@@ -8,6 +8,7 @@ import com.android.template.R;
 import com.android.template.network.FlickrService;
 import com.android.template.network.MovieService;
 import com.android.template.network.UserService;
+import com.android.template.presenter.FlickrPresenter;
 import com.android.template.presenter.MoviePresenter;
 import com.android.template.ui.NavigationDrawerFragment;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
@@ -25,7 +26,8 @@ import retrofit.RestAdapter;
  */
 @Module(injects = {
         NavigationDrawerFragment.class,
-        MoviePresenter.class
+        MoviePresenter.class,
+        FlickrPresenter.class
 }, library = true)
 public class ApplicationModule {
     private static final String DEFAULT_PREFS = "DEFAULT_PREFS";

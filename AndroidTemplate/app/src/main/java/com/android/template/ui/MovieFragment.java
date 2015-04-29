@@ -84,11 +84,6 @@ public class MovieFragment extends BaseFragment implements SwipeRefreshLayout.On
         moviePresenter.setView(null);
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-    }
-
     private RecyclerView.LayoutManager getLayoutForDisplay(Display display) {
         Point size = new Point();
         display.getSize(size);
@@ -125,9 +120,5 @@ public class MovieFragment extends BaseFragment implements SwipeRefreshLayout.On
 
     public void clearMovies() {
         movieAdapter.clear();
-    }
-
-    public String getTitle() {
-        return "The";
     }
 }

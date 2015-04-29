@@ -28,7 +28,7 @@ import rx.subscriptions.Subscriptions;
  * Created by isacssouza on 4/28/15.
  */
 @Singleton
-public class MoviePresenter implements Observer<Movie> {
+public class MoviePresenter implements Presenter<MovieFragment>, Observer<Movie> {
     private static final String TAG = MoviePresenter.class.getSimpleName();
 
     private Context context;
@@ -45,14 +45,12 @@ public class MoviePresenter implements Observer<Movie> {
         this.context = context;
     }
 
-    public MovieFragment getView() {
-        return view;
-    }
-
+    @Override
     public void setView(MovieFragment view) {
         this.view = view;
     }
 
+    @Override
     public void resume() {
         if (movies.isEmpty()) {
             refresh();
@@ -64,12 +62,13 @@ public class MoviePresenter implements Observer<Movie> {
         }
     }
 
+    @Override
     public void pause() {
     }
 
     public void refresh() {
         if (subscription.isUnsubscribed() && view != null) {
-            subscription = loadData(view.getTitle());
+            subscription = loadData("The");
         }
     }
 

@@ -8,7 +8,6 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -19,32 +18,26 @@ import android.view.ViewGroup;
 import com.android.template.R;
 import com.android.template.adapter.FlickrAdapter;
 import com.android.template.model.FlickrPhoto;
-import com.android.template.model.FlickrSearch;
-import com.android.template.network.FlickrService;
+import com.android.template.presenter.FlickrPresenter;
 
 import javax.inject.Inject;
 
 import butterknife.ButterKnife;
-import rx.Observable;
-import rx.Observer;
-import rx.functions.Func1;
 
 /**
  * A fragment that shows flickr photos on a grid.
  */
-public class FlickrFragment extends BaseFragment implements Observer<FlickrPhoto>, SwipeRefreshLayout.OnRefreshListener {
+public class FlickrFragment extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener {
     private static final String TAG = FlickrFragment.class.getSimpleName();
-    private static final String KEY_SEARCH_TEXT = "KEY_SEARCH_TEXT";
-
-    @Inject
-    FlickrService flickrService;
 
     @Inject
     FlickrAdapter flickrAdapter;
 
+    @Inject
+    FlickrPresenter flickrPresenter;
+
     private SwipeRefreshLayout swipeLayout;
     private SearchView searchView;
-    private String searchText = "meerkat";
 
     /**
      * Returns a new instance of this fragment
@@ -68,12 +61,6 @@ public class FlickrFragment extends BaseFragment implements Observer<FlickrPhoto
 
         setHasOptionsMenu(true);
 
-        if (savedInstanceState != null) {
-            if (savedInstanceState.containsKey(KEY_SEARCH_TEXT)) {
-                searchText = savedInstanceState.getString(KEY_SEARCH_TEXT);
-            }
-        }
-
         RecyclerView photoList = ButterKnife.findById(swipeLayout, R.id.photo_list);
         StaggeredGridLayoutManager layoutManager = getLayoutForDisplay(getActivity().getWindowManager().getDefaultDisplay());
         photoList.setLayoutManager(layoutManager);
@@ -82,14 +69,8 @@ public class FlickrFragment extends BaseFragment implements Observer<FlickrPhoto
 
         swipeLayout.setOnRefreshListener(this);
         swipeLayout.setColorSchemeResources(R.color.main_color);
-        // post to workaround https://code.google.com/p/android/issues/detail?id=77712
-        swipeLayout.post(new Runnable() {
-            @Override
-            public void run() {
-                swipeLayout.setRefreshing(true);
-            }
-        });
-        onRefresh();
+
+        flickrPresenter.setView(this);
     }
 
     @Override
@@ -100,8 +81,8 @@ public class FlickrFragment extends BaseFragment implements Observer<FlickrPhoto
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
-                searchText = searchView.getQuery().toString();
-                doSearch();
+                doSearch(searchView.getQuery().toString());
+                searchView.clearFocus();
                 return true;
             }
 
@@ -110,19 +91,35 @@ public class FlickrFragment extends BaseFragment implements Observer<FlickrPhoto
                 return false;
             }
         });
+
+        MenuItemCompat.expandActionView(menu.findItem(R.id.search));
+        searchView.setQuery(flickrPresenter.getCurrentSearch(), false);
+        searchView.clearFocus();
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
-        outState.putString(KEY_SEARCH_TEXT, searchText);
-        super.onSaveInstanceState(outState);
+    public void onResume() {
+        super.onResume();
+
+        flickrPresenter.resume();
     }
 
-    private void doSearch() {
-        searchView.clearFocus();
-        flickrAdapter.clear();
-        swipeLayout.setRefreshing(true);
-        onRefresh();
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        flickrPresenter.pause();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+
+        flickrPresenter.setView(null);
+    }
+
+    private void doSearch(String searchText) {
+        flickrPresenter.search(searchText);
     }
 
     private StaggeredGridLayoutManager getLayoutForDisplay(Display display) {
@@ -141,33 +138,29 @@ public class FlickrFragment extends BaseFragment implements Observer<FlickrPhoto
     }
 
     @Override
-    public void onCompleted() {
-        Log.i(TAG, "Flickr subscriber completed.");
+    public void onRefresh() {
+        flickrPresenter.search(flickrPresenter.getCurrentSearch());
+    }
 
+    public void startRefreshing() {
+        // post to workaround https://code.google.com/p/android/issues/detail?id=77712
+        swipeLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                swipeLayout.setRefreshing(true);
+            }
+        });
+    }
+
+    public void stopRefreshing() {
         swipeLayout.setRefreshing(false);
     }
 
-    @Override
-    public void onError(Throwable e) {
-        Log.e(TAG, "Flickr subscriber error.", e);
-
-        swipeLayout.setRefreshing(false);
-    }
-
-    @Override
-    public void onNext(FlickrPhoto photo) {
-        Log.i(TAG, "Flickr subscriber next: " + photo);
+    public void addPhoto(FlickrPhoto photo) {
         flickrAdapter.add(photo);
     }
 
-    @Override
-    public void onRefresh() {
-        bind(flickrService.search(searchText)
-                .flatMap(new Func1<FlickrSearch, Observable<FlickrPhoto>>() {
-                    @Override
-                    public Observable<FlickrPhoto> call(FlickrSearch search) {
-                        return Observable.from(search.getPhotos().getPhoto());
-                    }
-                }), this);
+    public void clearPhotos() {
+        flickrAdapter.clear();
     }
 }
