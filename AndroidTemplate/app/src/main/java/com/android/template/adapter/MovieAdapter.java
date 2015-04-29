@@ -100,4 +100,11 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
             notifyItemInserted(movies.size()-1);
         }
     }
+
+    public void clear() {
+        movies.clear();
+        movieMap.clear();
+
+        notifyDataSetChanged();
+    }
 }
