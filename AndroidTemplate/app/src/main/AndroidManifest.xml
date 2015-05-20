@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.android.template" >
+    package="com.isacssouza.template" >
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
@@ -8,10 +8,10 @@
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
 
     <permission
-        android:name="com.android.template.permission.C2D_MESSAGE"
+        android:name="com.isacssouza.template.permission.C2D_MESSAGE"
         android:protectionLevel="signature" />
 
-    <uses-permission android:name="com.android.template.permission.C2D_MESSAGE" />
+    <uses-permission android:name="com.isacssouza.template.permission.C2D_MESSAGE" />
 
     <application
         android:name=".MyApplication"
@@ -40,7 +40,7 @@
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
 
-                <category android:name="com.android.template" />
+                <category android:name="com.isacssouza.template" />
             </intent-filter>
         </receiver>
 

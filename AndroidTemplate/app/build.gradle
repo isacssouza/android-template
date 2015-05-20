@@ -61,7 +61,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.android.template"
+        applicationId "com.isacssouza.template"
         minSdkVersion 15
         targetSdkVersion 21
         versionCode 1
