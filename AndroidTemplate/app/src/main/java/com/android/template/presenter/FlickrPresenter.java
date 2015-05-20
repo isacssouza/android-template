@@ -8,7 +8,7 @@ import com.android.template.dagger.ForApplication;
 import com.android.template.model.FlickrPhoto;
 import com.android.template.model.FlickrSearch;
 import com.android.template.network.FlickrService;
-import com.android.template.ui.FlickrFragment;
+import com.android.template.ui.FlickrView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,11 +30,11 @@ import rx.subscriptions.Subscriptions;
  * Created by isacssouza on 4/28/15.
  */
 @Singleton
-public class FlickrPresenter implements Presenter<FlickrFragment>, Observer<FlickrPhoto> {
+public class FlickrPresenter implements Presenter<FlickrView>, Observer<FlickrPhoto> {
     private static final String TAG = FlickrPresenter.class.getSimpleName();
 
     private Context context;
-    private FlickrFragment view;
+    private FlickrView view;
     private Subscription subscription = Subscriptions.unsubscribed();
     private String currentSearch;
 
@@ -50,8 +50,8 @@ public class FlickrPresenter implements Presenter<FlickrFragment>, Observer<Flic
     }
 
     @Override
-    public void setView(FlickrFragment fragment) {
-        view = fragment;
+    public void setView(FlickrView view) {
+        this.view = view;
     }
 
     public String getCurrentSearch() {

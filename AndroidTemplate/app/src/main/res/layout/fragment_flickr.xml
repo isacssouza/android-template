@@ -1,4 +1,4 @@
-<android.support.v4.widget.SwipeRefreshLayout
+<com.android.template.ui.FlickrView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -17,4 +17,4 @@
         android:paddingBottom="0dp"
         android:scrollbars="vertical" />
 
-</android.support.v4.widget.SwipeRefreshLayout>
+</com.android.template.ui.FlickrView>

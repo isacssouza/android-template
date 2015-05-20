@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 
 import com.android.template.adapter.MovieAdapter;
 import com.android.template.ui.FlickrFragment;
+import com.android.template.ui.FlickrView;
 import com.android.template.ui.MainActivity;
 import com.android.template.ui.MovieFragment;
 import com.android.template.ui.NavigationDrawerFragment;
@@ -25,7 +26,8 @@ import dagger.Provides;
                 NavigationDrawerFragment.class,
                 MovieFragment.class,
                 FlickrFragment.class,
-                MovieAdapter.class
+                MovieAdapter.class,
+                FlickrView.class
         },
         addsTo = ApplicationModule.class
 )
