@@ -4,7 +4,7 @@
 
 general:
     artifacts:
-        - /home/ubuntu/your-app-name/app/build/outputs/apk/
+        - /home/ubuntu/android-template/AndroidTemplate/app/build/outputs/apk/
 
 machine:
     environment:
@@ -13,9 +13,9 @@ machine:
 dependencies:
     override:
         - echo y | android update sdk --no-ui --all --filter tools,platform-tools,build-tools-21.1.2,android-21,extra-google-m2repository,extra-google-google_play_services,extra-android-support
-        - ANDROID_HOME=/usr/local/android-sdk-linux ./gradlew dependencies
+        - ANDROID_HOME=/usr/local/android-sdk-linux cd AndroidTemplate/ && ./gradlew dependencies
 
 test:
     override:
-        - (./gradlew assemble):
+        - (cd AndroidTemplate/ && ./gradlew assemble):
             timeout: 360
