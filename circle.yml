@@ -17,5 +17,5 @@ dependencies:
 
 test:
     override:
-        - (cd AndroidTemplate/ && ./gradlew assemble):
+        - (cd AndroidTemplate/ && ./gradlew check):
             timeout: 360
