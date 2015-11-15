@@ -32,17 +32,16 @@ public class MoviePresenter implements Presenter<MovieFragment>, Observer<Movie>
     private static final String TAG = MoviePresenter.class.getSimpleName();
 
     private Context context;
+    private MovieService movieService;
     private MovieFragment view;
     private Subscription subscription = Subscriptions.unsubscribed();
 
     private List<Movie> movies = new ArrayList<>();
 
     @Inject
-    MovieService movieService;
-
-    @Inject
-    public MoviePresenter(@ForApplication Context context) {
+    public MoviePresenter(@ForApplication Context context, MovieService movieService) {
         this.context = context;
+        this.movieService = movieService;
     }
 
     @Override

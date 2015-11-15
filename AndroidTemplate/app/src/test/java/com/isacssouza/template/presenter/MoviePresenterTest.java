@@ -2,6 +2,7 @@ package com.isacssouza.template.presenter;
 
 import android.test.mock.MockContext;
 
+import com.isacssouza.template.TestSchedulerProxy;
 import com.isacssouza.template.model.Movie;
 import com.isacssouza.template.model.Search;
 import com.isacssouza.template.network.MovieService;
@@ -16,8 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observable;
-import rx.schedulers.TestScheduler;
-import rx.subjects.TestSubject;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
@@ -37,12 +36,13 @@ public class MoviePresenterTest {
     @Mock
     private MovieFragment movieFragment;
 
+    private TestSchedulerProxy testScheduler = TestSchedulerProxy.get();
+
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
 
-        moviePresenter = new MoviePresenter(new MockContext());
-        moviePresenter.movieService = movieService;
+        moviePresenter = new MoviePresenter(new MockContext(), movieService);
     }
 
     @Test
@@ -119,15 +119,13 @@ public class MoviePresenterTest {
         movies.add(movie);
         search.setSearch(movies);
 
-        TestScheduler testScheduler = new TestScheduler();
-        TestSubject<Search> observable = TestSubject.create(testScheduler);
+        Observable<Search> observable = Observable.just(search);
 
         when(movieService.searchByTitle("The")).thenReturn(observable);
 
         moviePresenter.setView(movieFragment);
         moviePresenter.resume();
 
-        observable.onNext(search);
         testScheduler.triggerActions();
 
         verify(movieService).getById(movie.getImdbID());
