@@ -17,5 +17,9 @@ dependencies:
 
 test:
     override:
-        - (cd AndroidTemplate/ && ./gradlew check):
+        - (cd AndroidTemplate/ && ./gradlew assemble check):
             timeout: 360
+    post:
+        - mkdir -p $CIRCLE_TEST_REPORTS/junit/
+        - cp -r AndroidTemplate/app/build/test-results/debug $CIRCLE_TEST_REPORTS/junit/
+        - cp -r AndroidTemplate/app/build/test-results/release $CIRCLE_TEST_REPORTS/junit/
